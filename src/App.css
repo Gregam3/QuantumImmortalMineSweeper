@@ -4,7 +4,7 @@
 
 .Loading-screen {
   animation: App-logo-spin infinite 5s linear;
-  height: 40vmin;
+
   pointer-events: none;
   padding-bottom: 20px;
 }
