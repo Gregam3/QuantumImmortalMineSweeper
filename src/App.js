@@ -1,60 +1,44 @@
 import React, { Component } from 'react';
-import logo from './mylogo.png';
+import {LoadSpinner} from './LoadSpinner.js';
+import {Menu} from './Menu.js'
+
 import './App.css';
 
-let loadingMessages = ["Finding Reality"];
 
-const sleep = (milliseconds) => {
-  return new Promise(resolve => setTimeout(resolve, milliseconds))
+const Activities = {
+    LOADING: 1,
+    MENU: 2,
+    PLAYING: 3,
+    HOW_TO_PLAY: 4,
+    WHATS_DIFFERENT: 5
 };
 
-
 class App extends Component {
-  state = {
-    currentLoadingMessage: "Finding Reality",
-    logoSize: 40
-  };
-
-  componentDidMount() {
-    this.loadingText();
-  }
+    state = {
+      currentActivity: Activities.LOADING
+    };
 
   render() {
     return (
       <div className="App">
-        <header className="App-header">
-          <img id="loading-spinner" style={{height: this.state.logoSize + 'vmin'}} src={logo} className="Loading-screen" alt="logo" />
-          <p style={{paddingTop: '40px'}}>
-            {(this.state.currentLoadingMessage !== "Found!") ? this.state.currentLoadingMessage : ""}
-          </p>
+        <header className="App-header" >
+          {this.getActivity()}
         </header>
       </div>
     );
   }
-  
-  loadingText = async () => {
-    for (let i = 0; i < 4; i++) {
-      console.log(this.state.currentLoadingMessage);
-      if(i < 3) this.setState({currentLoadingMessage : this.state.currentLoadingMessage + '.'});
-      else {
-        this.setState({currentLoadingMessage: "Found!"});
-        this.finishLoadingAnimation();
-      }
-      await sleep(500);
-    }
-  };
 
-  finishLoadingAnimation = async () => {
-    for (let i = 0; i < 100; i++) {
-      this.setState({logoSize: this.state.logoSize + 0.5});
-      await sleep(0.1);
+    getActivity() {
+        switch (this.state.currentActivity) {
+            case Activities.LOADING: return (<LoadSpinner setActivity={this.setActivity}/>);
+            case Activities.MENU: return (<Menu setActivity={this.setActivity}/>);
+        }
     }
 
-    for (let i = 100; i > 0; i--) {
-      this.setState({logoSize: this.state.logoSize - 1});
-      await sleep(2);
+    setActivity(activityNumber) {
+        console.log(this.state);
+        this.setState({currentActivity: activityNumber})
     }
-  }
 }
 
 export default App;
