@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
+import logo from './mylogo.png';
 import './App.css';
 
-let loadingMessages = ["Generating ", 
-  "Imitating Discord",
-  "God these are annoying"];
+let loadingMessages = ["Finding Reality"];
+
+const sleep = (milliseconds) => {
+  return new Promise(resolve => setTimeout(resolve, milliseconds))
+};
+
 
 class App extends Component {
   state = {
-    currentLoadingMessage: ""
+    currentLoadingMessage: "Finding Reality"
   };
 
   componentDidMount() {
@@ -20,7 +23,7 @@ class App extends Component {
       <div className="App">
         <header className="App-header">
           <img src={logo} className="Loading-screen" alt="logo" />
-          <p>
+          <p style={{paddingTop: '40px'}}>
             {this.state.currentLoadingMessage}
           </p>
         </header>
@@ -29,14 +32,12 @@ class App extends Component {
   }
   
   loadingText = async () => {
-    this.setState({currentLoadingMessage : loadingMessages.shift()});
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < 4; i++) {
+      console.log(this.state.currentLoadingMessage);
+      await sleep(500);
       this.setState({currentLoadingMessage : this.state.currentLoadingMessage + '.'});
-      setTimeout(null,  1000)
     }
-
-    if(loadingMessages) setTimeout(this.loadingText,  1000)
-  }
+  };
 }
 
 
