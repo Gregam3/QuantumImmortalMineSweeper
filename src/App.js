@@ -1,44 +1,42 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 import {LoadSpinner} from './LoadSpinner.js';
 import {Menu} from './Menu.js'
+import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 
 import './App.css';
+import {Instructions} from "./Instructions";
+import {MineSweeper} from "./game/MineSweeper";
 
 
-const Activities = {
-    LOADING: 1,
-    MENU: 2,
-    PLAYING: 3,
-    HOW_TO_PLAY: 4,
-    WHATS_DIFFERENT: 5
-};
 
 class App extends Component {
-    state = {
-      currentActivity: Activities.LOADING
-    };
 
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header" >
-          {this.getActivity()}
-        </header>
-      </div>
-    );
-  }
 
-    getActivity() {
-        switch (this.state.currentActivity) {
-            case Activities.LOADING: return (<LoadSpinner setActivity={this.setActivity}/>);
-            case Activities.MENU: return (<Menu setActivity={this.setActivity}/>);
-        }
-    }
+	render() {
+		return (
+			<div className="App">
+				<header className="App-header">
+					<Router>
+						<div>
+							<Link to="/loading">Load</Link>
+							<br/>
+							<Link to="/Instructions">Instructions</Link>
+							<br/>
+							<Link to="/play">Start Game</Link>
 
-    setActivity(activityNumber) {
-        console.log(this.state);
-        this.setState({currentActivity: activityNumber})
-    }
+							<br/>
+							<br/>
+
+							<Route exact path="/" component={Menu}/>
+							<Route exact path="/play" component={MineSweeper}/>
+							<Route path="/loading" component={LoadSpinner}/>
+							<Route path="/Instructions" component={Instructions}/>
+						</div>
+					</Router>
+				</header>
+			</div>
+		);
+	}
 }
 
 export default App;
