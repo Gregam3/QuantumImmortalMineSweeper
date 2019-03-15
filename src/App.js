@@ -7,10 +7,11 @@ import './App.css';
 import {Instructions} from "./Instructions";
 import {MineSweeper} from "./game/MineSweeper";
 
-
+document.addEventListener("contextmenu", function(e){
+	e.preventDefault();
+}, false);
 
 class App extends Component {
-
 
 	render() {
 		return (
@@ -20,7 +21,7 @@ class App extends Component {
 						<div>
 							<Link to="/loading">Load</Link>
 							<br/>
-							<Link to="/Instructions">Instructions</Link>
+							<Link to="/instructions">Instructions</Link>
 							<br/>
 							<Link to="/play">Start Game</Link>
 
@@ -30,7 +31,7 @@ class App extends Component {
 							<Route exact path="/" component={Menu}/>
 							<Route exact path="/play" component={MineSweeper}/>
 							<Route path="/loading" component={LoadSpinner}/>
-							<Route path="/Instructions" component={Instructions}/>
+							<Route path="/instructions" component={Instructions}/>
 						</div>
 					</Router>
 				</header>

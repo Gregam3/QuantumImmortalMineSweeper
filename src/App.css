@@ -40,4 +40,7 @@
   float: right;
   border: 1px #000000 solid;
   margin: 0;
+  cursor: pointer;
+  user-select:none;
 }
+
