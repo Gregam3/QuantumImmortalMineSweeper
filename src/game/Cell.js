@@ -6,18 +6,13 @@ export class Cell extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {
-			content: props.content,
-			visible: false,
-			flagged: false
-		}
-
+		this.state = props.cellState;
 	}
 
 	render() {
 		if (this.state.visible) return this.getCell()
-		if (this.state.flagged) return <div className="cell" onContextMenu={this.flag}>🏳️</div>
-		else return (<div className="cell" onClick={this.makeVisible} onContextMenu={this.flag}/>)
+		if (this.state.flagged) return <div className="cell">🏳️</div>
+		else return (<div className="cell"/>)
 	}
 
 	getCell() {
@@ -31,14 +26,5 @@ export class Cell extends Component {
 				            style={{color: '#' + Math.floor((255 / 8) * this.state.content).toString(16) + '0000'}}
 				> {this.state.content} </div>
 		}
-	}
-
-	makeVisible = () => {
-		console.log(this.state.content);
-		this.setState({visible: true})
-	};
-
-	flag = () => {
-		this.setState({flagged: !this.state.flagged});
 	}
 }

@@ -28,7 +28,13 @@ export class MineSweeper extends Component {
 					permutations.forEach(p => mineIndicator += safeMines(r + p[0], c + p[1]));
 				}
 
-				cells[r][c] = mineIndicator;
+				cells[r][c] = {
+					visible: false,
+					flagged: false,
+					cellContent: mineIndicator,
+					row: r,
+					col: c
+				};
 			}
 		}
 

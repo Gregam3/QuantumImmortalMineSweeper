@@ -7,20 +7,40 @@ export class Board extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {cells: props.board};
-		console.log(this.state)
+		this.state = {rows: props.board};
+
+		this.makeVisible = this.makeVisible.bind(this)
+		this.flag = this.flag.bind(this)
 	}
 
 	render() {
-		let cells = [];
+		return this.state.rows.map(row =>
+			row.map(cell =>
+				<Cell key={(cell.row, cell.col)}
+					cellState={cell}
+				      onClick={() => this.makeVisible(cell.row, cell.col)}
+				      onContextMenu={() => this.flag(cell.row, cell.col)}/>))
+	}
 
-		if(this.state.cells.length > 0) {
-			for (let r = 0; r < 10; r++) {
-				for (let c = 0; c < 10; c++) cells.push(<Cell content={this.state.cells[r][c]}/>);
-				cells.push(<br/>);
-			}
-		}
+	makeVisible = (row, col) => {
+		console.log('test')
 
-		return cells
+		let cells = this.state.rows;
+		let cell = cells[row][col];
+		cell.visible = true;
+		cells[row][col] = cell;
+
+		this.setState(cells);
+	};
+
+	flag = (row, col) => {
+		console.log('test')
+
+		let cells = this.state.rows;
+		let cell = cells[row][col];
+		cell.flagged = !cell.flagged;
+		cells[row][col] = cell;
+
+		this.setState(cells);
 	}
 }
