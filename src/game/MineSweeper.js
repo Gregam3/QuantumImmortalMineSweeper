@@ -8,11 +8,14 @@ const indexes = [-1, 0, 1];
 
 const permutations = indexes.flatMap(i => indexes.map(i1 => [i, i1]));
 
-const BOMB_PERCENTAGE = 10;
+const BOMB_PERCENTAGE = 20;
 
 export class MineSweeper extends Component {
 	render() {
-		return (<Board board={this.generateMines()} oncontextmenu="return false;"/>)
+		//Todo change absolute width
+		return (<div style={{width: '430px'}}>
+			<Board board={this.generateMines()}/>
+		</div>)
 	}
 
 	generateMines() {
@@ -25,7 +28,7 @@ export class MineSweeper extends Component {
 
 				if (!mines[r][c]) {
 					mineIndicator = 0;
-					permutations.forEach(p => mineIndicator += safeMines(r + p[0], c + p[1]));
+					permutations.forEach(p => mineIndicator += safeGrid(r + p[0], c + p[1]));
 				}
 
 				cells[r][c] = {
@@ -40,7 +43,7 @@ export class MineSweeper extends Component {
 
 		return cells;
 
-		function safeMines(row, column) {
+		function safeGrid(row, column) {
 			return (row < 0 || row >= ROWS || column < 0 || column >= COLS) ? false : mines[row][column];
 		}
 	}

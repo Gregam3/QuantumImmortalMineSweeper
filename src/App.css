@@ -34,13 +34,31 @@
 }
 
 .cell {
-  background-color: #61dafb;
+  background-color: #4e4e4e;
   height: 40px;
   width: 40px;
   float: right;
-  border: 1px #000000 solid;
   margin: 0;
   cursor: pointer;
   user-select:none;
 }
 
+.safe-cell {
+  background-color: #9e9ba0;
+  height: 40px;
+  width: 40px;
+  float: right;
+  margin: 0;
+  cursor: pointer;
+  user-select:none;
+}
+
+.danger-cell {
+  background-color: #fb3800;
+  height: 40px;
+  width: 40px;
+  float: right;
+  margin: 0;
+  cursor: pointer;
+  user-select:none;
+}
