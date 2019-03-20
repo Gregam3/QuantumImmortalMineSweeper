@@ -14,18 +14,55 @@ export class Board extends Component {
 
 		this.state = {rows: props.board};
 
-		this.makeCellVisible = this.makeCellVisible.bind(this)
+		this.makeCellVisible = this.makeCellVisible.bind(this);
 		this.flag = this.flag.bind(this)
 	}
 
 	render() {
-		return this.state.rows.map(row =>
-			row.map(cell =>
-				<Cell key={(cell.row, cell.col)}
-				      cellState={cell}
-				      onClick={() => this.makeCellVisible(cell.row, cell.col)}
-				      onContextMenu={() => this.flag(cell.row, cell.col)}/>))
+		const mines = this.getMines();
+		const flags = this.getFlags();
+
+		console.log(mines, flags);
+
+		if(JSON.stringify(mines) == JSON.stringify(flags)) this.makeAllVisible();
+
+		return (<div>
+			Mines: {mines.length}
+			<br/>
+			Flags: {flags.length}
+			<br/>
+			{this.state.rows.map(row =>
+				row.map(cell => <Cell key={(cell.row, cell.col)}
+				                      cellState={cell}
+				                      onClick={() => this.makeCellVisible(cell.row, cell.col)}
+				                      onContextMenu={() => this.flag(cell.row, cell.col)}/>))}</div>)
 	}
+
+	makeAllVisible() {
+		this.state.rows.forEach(r => r.forEach(c => c.visible = true));
+
+		window.alert('Mines swept');
+	}
+
+	getMines() {
+		let minePositions = [];
+
+		this.state.rows.forEach(r => r.forEach(c => {
+			if (c.cellContent === -1) minePositions.push(c);
+		}));
+
+		return minePositions;
+	};
+
+	getFlags() {
+		let flagPositions = [];
+
+		this.state.rows.forEach(r => r.forEach(c => {
+			if (c.flagged) flagPositions.push(c);
+		}));
+
+		return flagPositions;
+	};
 
 	makeCellVisible = (row, col) => {
 		let cells = this.state.rows;
@@ -39,11 +76,11 @@ export class Board extends Component {
 	makeConnectedCellsVisible = () => {
 		let cells = this.state.rows;
 
-		for (let i = 0; i < 10; i++) scanForCellsThatShouldBeVisible();
+		for (let i = 0; i < 5; i++) scanForCellsThatShouldBeVisible();
 
 
 		return cells;
-		
+
 		function scanForCellsThatShouldBeVisible() {
 			for (let r = 0; r <= ROWS - 1; r++) {
 				for (let c = 0; c <= COLS - 1; c++) {
@@ -54,7 +91,7 @@ export class Board extends Component {
 
 		function makeApplicableCellVisible(r, c) {
 			if (r >= 0 && r < ROWS && c >= 0 && c < COLS)
-				if(!cells[r][c].visible) cells[r][c].visible = true;
+				if (!cells[r][c].visible) cells[r][c].visible = true;
 		}
 	};
 
