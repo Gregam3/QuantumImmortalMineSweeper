@@ -1,6 +1,7 @@
 import {Component} from 'react';
 import {Cell} from "./Cell";
 import React from "react";
+import Sound from 'react-sound';
 
 const indexes = [-1, 0, 1];
 const permutations = indexes.flatMap(i => indexes.map(i1 => [i, i1]));
@@ -27,6 +28,13 @@ export class Board extends Component {
 		if(JSON.stringify(mines) == JSON.stringify(flags)) this.makeAllVisible();
 
 		return (<div>
+			<Sound
+				url="pop.mp3"
+				autoLoad={true}
+				playStatus={Sound.status.PLAYING}
+				playFromPosition={0}
+			/>
+
 			Mines: {mines.length}
 			<br/>
 			Flags: {flags.length}

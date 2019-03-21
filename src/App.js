@@ -19,11 +19,9 @@ class App extends Component {
 				<header className="App-header">
 					<Router>
 						<div>
-							<Link to="/loading">Load</Link>
-							<br/>
-							<Link to="/instructions">Instructions</Link>
-							<br/>
-							<Link to="/play">Start Game</Link>
+							<Link to="/loading"><button>Load</button></Link>
+							<Link to="/instructions"><button>Instructions</button></Link>
+							<Link to="/play"><button>Start Game</button></Link>
 
 							<br/>
 							<br/>
