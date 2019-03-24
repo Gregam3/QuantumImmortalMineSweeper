@@ -8,7 +8,7 @@ const indexes = [-1, 0, 1];
 
 const permutations = indexes.flatMap(i => indexes.map(i1 => [i, i1]));
 
-const BOMB_PERCENTAGE = 15;
+const BOMB_PERCENTAGE = 5;
 
 export class MineSweeper extends Component {
 	render() {
