@@ -7,11 +7,13 @@ const indexes = [-1, 0, 1];
 const permutations = indexes.flatMap(i => indexes.map(i1 => [i, i1]));
 
 const Action = {
-	Flag: 0,
-	Reveal: 1,
-	Bomb: 2,
-	Finished: 3
+	Flag: "flag",
+	Reveal: "pop",
+	Bomb: "explosion",
+	Finished: "complete",
+	NoMoreFlags: "no-more-flags"
 };
+
 
 const COLS = 10, ROWS = 10;
 
@@ -47,33 +49,15 @@ export class Board extends Component {
 	}
 
 	getAppropriateSoundEffect() {
-		let soundEffectName = getSoundEffectName(this.state.lastAction);
-
-		console.log(this.state.lastAction);
-
-		return (soundEffectName) ?
+		return (this.state.lastAction) ?
 			(<Sound
-				url={soundEffectName + ".mp3"}
+				url={this.state.lastAction + '.mp3'}
 				autoLoad={true}
 				autoPlay={true}
 				playStatus={Sound.status.PLAYING}
 				playFromPosition={0}
 			/>) : "";
 
-		function getSoundEffectName(lastAction) {
-			switch (lastAction) {
-				case Action.Flag:
-					return "flag";
-				case Action.Reveal:
-					return "pop";
-				case Action.Bomb:
-					return "explosion";
-				case Action.Finished:
-					return "complete";
-				default:
-					return null;
-			}
-		}
 	}
 
 
@@ -131,18 +115,24 @@ export class Board extends Component {
 
 		function makeApplicableCellVisible(r, c) {
 			if (r >= 0 && r < ROWS && c >= 0 && c < COLS)
-				if (!cells[r][c].visible) cells[r][c].visible = true;
+				if (!cells[r][c].visible)  {
+					cells[r][c].visible = true;
+					cells[r][c].flagged = false;
+				}
 		}
 	};
 
 	flag = (row, col) => {
-		this.setState({lastAction: Action.Flag});
+		if(this.getFlags() >= this.getMines() && !this.state.rows[row][col].flagged) {
+			this.setState({lastAction:Action.NoMoreFlags})
+		} else {
+			this.setState({lastAction: Action.Flag});
+			let cells = this.state.rows;
+			let cell = cells[row][col];
+			cell.flagged = !cell.flagged;
+			cells[row][col] = cell;
 
-		let cells = this.state.rows;
-		let cell = cells[row][col];
-		cell.flagged = !cell.flagged;
-		cells[row][col] = cell;
-
-		this.setState(cells);
+			this.setState(cells);
+		}
 	};
 }
