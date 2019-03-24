@@ -2,6 +2,8 @@ import {Component} from 'react';
 import {Cell} from "./Cell";
 import React from "react";
 import Sound from 'react-sound';
+import '../App.css';
+import {generateMines} from "./MineSweeper";
 
 const indexes = [-1, 0, 1];
 const permutations = indexes.flatMap(i => indexes.map(i1 => [i, i1]));
@@ -32,20 +34,45 @@ export class Board extends Component {
 		const mines = this.getMines();
 		const flags = this.getFlags();
 
-		if (JSON.stringify(mines) === JSON.stringify(flags)) this.makeAllVisible();
+		let complete = false;
 
-		return (<div>
-			{this.getAppropriateSoundEffect()}
+		if (JSON.stringify(mines) === JSON.stringify(flags)) {
+			this.makeAllVisible();
+			complete = true;
+		}
 
-			Mines: {mines.length}
-			<br/>
-			Flags: {flags.length}
-			<br/>
+		return (
+			(complete) ? (<div className="complete-footer"> Level Complete!
+				<Sound
+					url={'complete.mp3'}
+					autoLoad={true}
+					autoPlay={true}
+					playStatus={Sound.status.PLAYING}
+					playFromPosition={0}
+				/>
+
+				<br/>
+
+				<button onClick={() => this.newBoard()}> Generate new Board </button>
+
+				<br/>
+			</div>) : (<div>{this.getAppropriateSoundEffect()}
+
+				Mines: {mines.length}
+				<br/>
+				Flags: {flags.length}
+				<br/>
 			{this.state.rows.map(row =>
 				row.map(cell => <Cell key={(cell.row, cell.col)}
-				                      cellState={cell}
-				                      onClick={() => this.makeCellVisible(cell.row, cell.col)}
-				                      onContextMenu={() => this.flag(cell.row, cell.col)}/>))}</div>)
+				cellState={cell}
+				onClick={() => this.makeCellVisible(cell.row, cell.col)}
+				onContextMenu={() => this.flag(cell.row, cell.col)}/>))}
+		</div>))
+	}
+
+	newBoard() {
+		console.log(this)
+		this.setState({rows: generateMines(), lastAction: null});
 	}
 
 	getAppropriateSoundEffect() {

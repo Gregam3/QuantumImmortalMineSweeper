@@ -8,7 +8,8 @@
     "react-fontawesome": "^1.6.1",
     "react-scripts": "2.1.8",
     "react-sound": "^1.2.0",
-    "react-youtube": "^7.9.0"
+    "react-youtube": "^7.9.0",
+    "react-bootstrap": "latest"
   },
   "scripts": {
     "start": "react-scripts start",

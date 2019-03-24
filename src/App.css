@@ -62,3 +62,8 @@
   cursor: pointer;
   user-select:none;
 }
+
+.complete-footer {
+  background-color: #007600;
+  color: #ffffff;
+}
