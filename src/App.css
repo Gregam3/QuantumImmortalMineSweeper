@@ -63,7 +63,12 @@
   user-select:none;
 }
 
-.complete-footer {
+.complete-screen {
   background-color: #007600;
+  color: #ffffff;
+}
+
+.fail-screen {
+  background-color: #760007;
   color: #ffffff;
 }

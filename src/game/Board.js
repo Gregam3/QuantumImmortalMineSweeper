@@ -13,18 +13,23 @@ const Action = {
 	Reveal: "pop",
 	Bomb: "explosion",
 	Finished: "complete",
-	NoMoreFlags: "no-more-flags"
+	NoMoreFlags: "no-more-flags",
+	Loss: ""
 };
 
+const GameState = {
+	Playing: 0,
+	Failed: 1,
+	Success: 2
+};
 
 const COLS = 10, ROWS = 10;
 
 export class Board extends Component {
-
 	constructor(props) {
 		super(props);
 
-		this.state = {rows: props.board, lastAction: null};
+		this.state = {rows: props.board, lastEvent: null};
 
 		this.makeCellVisible = this.makeCellVisible.bind(this);
 		this.flag = this.flag.bind(this)
@@ -34,63 +39,84 @@ export class Board extends Component {
 		const mines = this.getMines();
 		const flags = this.getFlags();
 
-		let complete = false;
+		let gameState = GameState.Playing;
 
 		if (JSON.stringify(mines) === JSON.stringify(flags)) {
 			this.makeAllVisible();
-			complete = true;
+			gameState = GameState.Success;
 		}
 
+		if(gameState === GameState.Playing) return this.game(mines, flags);
+		if(gameState === GameState.Success) return this.victoryScreen();
+		if(this.state.lastEvent === Action.Bomb) return  <Sound
+			url={'explosion.mp3'}
+			autoLoad={true}
+			autoPlay={true}
+			playStatus={Sound.status.PLAYING}
+			playFromPosition={0}
+			onFinishedPlaying={() => this.setState({lastEvent: Action.Loss})}
+		/> + this.game(mines, flags)
+		else return this.defeatScreen();
+	}
+
+	game(mines, flags) {
 		return (
-			(complete) ? (<div className="complete-footer"> Level Complete!
-				<Sound
-					url={'complete.mp3'}
-					autoLoad={true}
-					autoPlay={true}
-					playStatus={Sound.status.PLAYING}
-					playFromPosition={0}
-				/>
-
-				<br/>
-
-				<button onClick={() => this.newBoard()}> Generate new Board </button>
-
-				<br/>
-			</div>) : (<div>{this.getAppropriateSoundEffect()}
-
+			(<div>{this.getAppropriateSoundEffect()}
 				Mines: {mines.length}
 				<br/>
 				Flags: {flags.length}
 				<br/>
-			{this.state.rows.map(row =>
-				row.map(cell => <Cell key={(cell.row, cell.col)}
-				cellState={cell}
-				onClick={() => this.makeCellVisible(cell.row, cell.col)}
-				onContextMenu={() => this.flag(cell.row, cell.col)}/>))}
-		</div>))
+				{this.state.rows.map(row =>
+					row.map(cell => <Cell key={(cell.row, cell.col)}
+					                      cellState={cell}
+					                      onClick={() => this.makeCellVisible(cell.row, cell.col)}
+					                      onContextMenu={() => this.flag(cell.row, cell.col)}/>))}
+			</div>))
 	}
 
-	newBoard() {
-		console.log(this)
-		this.setState({rows: generateMines(), lastAction: null});
+	victoryScreen() {
+		return (<div className="complete-screen"> Level Complete!
+			<Sound
+				url={'complete.mp3'}
+				autoLoad={true}
+				autoPlay={true}
+				playStatus={Sound.status.PLAYING}
+				playFromPosition={0}
+			/>
+			<br/>
+			<button onClick={() => this.generateNewBoard()}> Generate new Board </button>
+			<br/>
+		</div>)
+	}
+
+	defeatScreen() {
+		console.log('TEST \n\n\n\n\n')
+
+		return (<div className="fail-screen"> Level Failed :(
+			<button onClick={() => this.generateNewBoard()}> Generate new Board </button>
+			<br/>
+		</div>)
+	}
+
+	generateNewBoard() {
+		console.log(this);
+		this.setState({rows: generateMines(), lastEvent: null});
 	}
 
 	getAppropriateSoundEffect() {
-		return (this.state.lastAction) ?
+		return (this.state.lastEvent && this.state.lastEvent !== Action.Bomb) ?
 			(<Sound
-				url={this.state.lastAction + '.mp3'}
+				url={this.state.lastEvent + '.mp3'}
 				autoLoad={true}
 				autoPlay={true}
 				playStatus={Sound.status.PLAYING}
 				playFromPosition={0}
 			/>) : "";
-
 	}
-
 
 	makeAllVisible() {
 		this.state.rows.forEach(r => r.forEach(c => c.visible = true));
-		if(this.state.lastAction !== Action.Finished) this.setState({lastAction: Action.Finished});
+		if(this.state.lastEvent !== Action.Finished) this.setState({lastEvent: Action.Finished});
 	}
 
 	getMines() {
@@ -117,7 +143,7 @@ export class Board extends Component {
 		let cells = this.state.rows;
 		let cell = cells[row][col];
 
-		this.setState({lastAction: (cell.cellContent === -1) ? Action.Bomb: Action.Reveal});
+		this.setState({lastEvent: (cell.cellContent === -1) ? Action.Bomb: Action.Reveal});
 		cell.visible = true;
 		cells[row][col] = cell;
 
@@ -151,9 +177,9 @@ export class Board extends Component {
 
 	flag = (row, col) => {
 		if(this.getFlags() >= this.getMines() && !this.state.rows[row][col].flagged) {
-			this.setState({lastAction:Action.NoMoreFlags})
+			this.setState({lastEvent:Action.NoMoreFlags})
 		} else {
-			this.setState({lastAction: Action.Flag});
+			this.setState({lastEvent: Action.Flag});
 			let cells = this.state.rows;
 			let cell = cells[row][col];
 			cell.flagged = !cell.flagged;

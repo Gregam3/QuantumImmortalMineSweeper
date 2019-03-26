@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {LoadSpinner} from './LoadSpinner.js';
-import {Menu} from './Menu.js'
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 
 import './App.css';
@@ -26,7 +25,6 @@ class App extends Component {
 							<br/>
 							<br/>
 
-							<Route exact path="/" component={Menu}/>
 							<Route exact path="/play" component={MineSweeper}/>
 							<Route path="/loading" component={LoadSpinner}/>
 							<Route path="/instructions" component={Instructions}/>
