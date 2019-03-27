@@ -11,8 +11,8 @@ export class Cell extends Component {
 
 	render() {
 		if (this.state.visible) return this.getCell();
-		if (this.state.flagged) return <div className="cell" onContextMenu={this.props.onContextMenu}>🚩</div>;
-		else return (<div className="cell" onClick={this.props.onClick} onContextMenu={this.props.onContextMenu}/>)
+		if (this.state.flagged) return <div className="cell threed-border" onContextMenu={this.props.onContextMenu}>🚩</div>;
+		else return (<div className="cell threed-border" onClick={this.props.onClick} onContextMenu={this.props.onContextMenu}/>)
 	}
 
 	getCell() {
@@ -27,8 +27,8 @@ export class Cell extends Component {
 	}
 
 	makeCell(content, typeNum) {
-		if (typeNum === 0) return <div className="safe-cell" >{content}</div>
-		if (typeNum === -1) return <div className="danger-cell" >{content}</div>
-		return <div className="cell" style={{color: '#' + Math.floor((255 / 8) * this.state.content).toString(16) + '0000'}}> {content} </div>
+		if (typeNum === 0) return <div className="safe-cell threed-border" >{content}</div>;
+		if (typeNum === -1) return <div className="danger-cell threed-border" >{content}</div>;
+		return <div className="cell threed-border" style={{color: '#' + Math.floor((255 / 8) * this.state.content).toString(16) + '0000'}}> {content} </div>;
 	}
 }

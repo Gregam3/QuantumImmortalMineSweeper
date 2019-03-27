@@ -1,74 +1,84 @@
 .App {
-  text-align: center;
+    text-align: center;
 }
 
 .Loading-screen {
-  animation: App-logo-spin infinite 5s linear;
+    animation: App-logo-spin infinite 5s linear;
 
-  pointer-events: none;
-  padding-bottom: 20px;
+    pointer-events: none;
+    padding-bottom: 20px;
 }
 
 .App-header {
-  background-color: #222222;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+    background-color: #222222;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
 }
 
 .App-link {
-  color: #61dafb;
+    color: #61dafb;
 }
 
 @keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.threed-border {
+    border-width: 1px;
+    border-style: solid;
+    border-bottom-color: #aaa;
+    border-right-color: #aaa;
+    border-top-color: #ddd;
+    border-left-color: #ddd;
+    border-radius: 3px;
 }
 
 .cell {
-  background-color: #4e4e4e;
-  height: 40px;
-  width: 40px;
-  float: right;
-  margin: 0;
-  cursor: pointer;
-  user-select:none;
+    background-color: #4e4e4e;
+    height: 36px;
+    width: 36px;
+    float: right;
+    margin: 0;
+    cursor: pointer;
+    user-select: none;
 }
 
 .safe-cell {
-  background-color: #9e9ba0;
-  height: 40px;
-  width: 40px;
-  float: right;
-  margin: 0;
-  cursor: pointer;
-  user-select:none;
+    background-color: #9e9ba0;
+    height: 36px;
+    width: 36px;
+    float: right;
+    margin: 0;
+    cursor: pointer;
+    user-select: none;
 }
 
 .danger-cell {
-  background-color: #fb3800;
-  height: 40px;
-  width: 40px;
-  float: right;
-  margin: 0;
-  cursor: pointer;
-  user-select:none;
+    background-color: #fb3800;
+    height: 40px;
+    width: 40px;
+    float: right;
+    margin: 0;
+    cursor: pointer;
+    user-select: none;
 }
 
 .complete-screen {
-  background-color: #007600;
-  color: #ffffff;
+    background-color: #007600;
+    color: #ffffff;
 }
 
 .fail-screen {
-  background-color: #760007;
-  color: #ffffff;
+    background-color: #760007;
+    color: #ffffff;
 }

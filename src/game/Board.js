@@ -5,6 +5,7 @@ import Sound from 'react-sound';
 import '../App.css';
 import {generateMines} from "./MineSweeper";
 import {LoadSpinner} from "../LoadSpinner";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const indexes = [-1, 0, 1];
 const permutations = indexes.flatMap(i => indexes.map(i1 => [i, i1]));
@@ -80,7 +81,9 @@ export class Board extends Component {
 	victoryScreen() {
 		level++;
 
-		return (<div className="complete-screen"> Level Complete!
+		return (<div className="complete-screen" style={{width: '300px', height: '200px'}}>
+			<br/>
+			<FontAwesomeIcon icon="trophy"/> Level Complete! <FontAwesomeIcon icon="trophy"/>
 			<Sound
 				url={'complete.mp3'}
 				autoLoad={true}
@@ -89,6 +92,8 @@ export class Board extends Component {
 				playFromPosition={0}
 			/>
 			<br/>
+
+
 			<button onClick={() => this.generateNewBoard()}> Proceed to level {level + 1}</button>
 			<br/>
 		</div>)
@@ -98,7 +103,7 @@ export class Board extends Component {
 		console.debug(this.state.lastEvent);
 
 		return (
-			<div className="fail-screen">
+			<div className="fail-screen" style={{width: '300px', height: '200px'}}>
 				<Sound
 					url={'explosion.mp3'}
 					autoLoad={true}
@@ -106,7 +111,7 @@ export class Board extends Component {
 					playStatus={Sound.status.PLAYING}
 					playFromPosition={0}
 				/>
-				Level Failed :(
+				<FontAwesomeIcon icon="frown"/> Level Failed <FontAwesomeIcon icon="frown"/>
 				<br/>
 				<button onClick={() => this.generateNewBoard()}> Retry level {level + 1} </button>
 
@@ -169,8 +174,6 @@ export class Board extends Component {
 		let cells = this.state.rows;
 		let rows = this.rowCount();
 		let cols = this.colCount();
-
-		console.debug(rows, cells);
 
 		for (let i = 0; i < 10; i++) scanForCellsThatShouldBeVisible();
 
