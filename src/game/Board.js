@@ -25,6 +25,8 @@ const GameState = {
 
 const COLS = 10, ROWS = 10;
 
+let gameState = GameState.Playing;
+
 export class Board extends Component {
 	constructor(props) {
 		super(props);
@@ -39,24 +41,17 @@ export class Board extends Component {
 		const mines = this.getMines();
 		const flags = this.getFlags();
 
-		let gameState = GameState.Playing;
+		const clickedBomb = this.state.lastEvent === Action.Bomb;
 
-		if (JSON.stringify(mines) === JSON.stringify(flags)) {
-			this.makeAllVisible();
-			gameState = GameState.Success;
+		if (JSON.stringify(mines) === JSON.stringify(flags) || clickedBomb) {
+			this.makeAllVisible(clickedBomb);
+			gameState = (clickedBomb) ? GameState.Failed : GameState.Success;
 		}
 
 		if(gameState === GameState.Playing) return this.game(mines, flags);
 		if(gameState === GameState.Success) return this.victoryScreen();
-		if(this.state.lastEvent === Action.Bomb) return  <Sound
-			url={'explosion.mp3'}
-			autoLoad={true}
-			autoPlay={true}
-			playStatus={Sound.status.PLAYING}
-			playFromPosition={0}
-			onFinishedPlaying={() => this.setState({lastEvent: Action.Loss})}
-		/> + this.game(mines, flags)
-		else return this.defeatScreen();
+
+		return this.defeatScreen();
 	}
 
 	game(mines, flags) {
@@ -90,21 +85,22 @@ export class Board extends Component {
 	}
 
 	defeatScreen() {
-		console.log('TEST \n\n\n\n\n')
+		console.debug(this.state.lastEvent);
 
 		return (<div className="fail-screen"> Level Failed :(
-			<button onClick={() => this.generateNewBoard()}> Generate new Board </button>
 			<br/>
+			<button onClick={() => this.generateNewBoard()}> Try Again? </button>
+
 		</div>)
 	}
 
 	generateNewBoard() {
-		console.log(this);
+		gameState = GameState.Playing;
 		this.setState({rows: generateMines(), lastEvent: null});
 	}
 
 	getAppropriateSoundEffect() {
-		return (this.state.lastEvent && this.state.lastEvent !== Action.Bomb) ?
+		return (this.state.lastEvent) ?
 			(<Sound
 				url={this.state.lastEvent + '.mp3'}
 				autoLoad={true}
@@ -114,9 +110,8 @@ export class Board extends Component {
 			/>) : "";
 	}
 
-	makeAllVisible() {
+	makeAllVisible(failed) {
 		this.state.rows.forEach(r => r.forEach(c => c.visible = true));
-		if(this.state.lastEvent !== Action.Finished) this.setState({lastEvent: Action.Finished});
 	}
 
 	getMines() {
