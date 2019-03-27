@@ -2,6 +2,14 @@
     text-align: center;
 }
 
+button {
+    font-size: 130%
+}
+
+* {
+    font-family: 'BebasNeueRegular';
+}
+
 .clickable {
     user-select: none;
     cursor: pointer;
@@ -39,6 +47,7 @@
 }
 
 .threed-border {
+
     border-width: 1px;
     border-style: solid;
     border-bottom-color: #aaa;
@@ -49,7 +58,7 @@
 }
 
 .cell {
-    background-color: #4e4e4e;
+    background-color: #656666;
     height: 36px;
     width: 36px;
     float: right;

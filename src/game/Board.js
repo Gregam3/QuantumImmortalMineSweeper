@@ -64,7 +64,7 @@ export class Board extends Component {
 
 	game(mines, flags) {
 		return (
-			(<div style={{width: this.colCount() * CELL_WIDTH + 'px'}}>{this.getAppropriateSoundEffect()}
+			(<div style={{width: this.colCount() * CELL_WIDTH + 'px', fontFamily: 'BebasNeueRegular'}}>{this.getAppropriateSoundEffect()}
 				Level: {level + 1}
 			<br/>
 				💣 {mines.length}

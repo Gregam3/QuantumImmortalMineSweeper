@@ -22,9 +22,9 @@ class App extends Component {
 			<div className="App">
 				<header className="App-header">
 					<Router>
-						<div>
-							<Link to="/instructions"><button>Instructions</button></Link>
-							<Link to="/play"><button>Play</button></Link>
+						<div >
+							<Link to="/instructions" ><button>Instructions</button></Link>
+							<Link to="/play" ><button>Play</button></Link>
 
 							<br/>
 							<br/>

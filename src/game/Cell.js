@@ -29,6 +29,6 @@ export class Cell extends Component {
 	makeCell(content, typeNum) {
 		if (typeNum === 0) return <div className="safe-cell threed-border" >{content}</div>;
 		if (typeNum === -1) return <div className="danger-cell threed-border" >{content}</div>;
-		return <div className="cell threed-border" style={{color: '#' + Math.floor((255 / 8) * this.state.content).toString(16) + '0000'}}> {content} </div>;
+		return <div className="cell threed-border" style={{color: '#' + (100 + Math.floor((155 / 4)) * this.state.cellContent).toString(16) + '0000'}}> {content} </div>;
 	}
 }
