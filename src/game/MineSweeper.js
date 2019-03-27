@@ -45,8 +45,6 @@ function generate2DArray(rowCount, columnCount, fillFun) {
 export class MineSweeper extends Component {
 	render() {
 		//Todo change absolute width
-		return (<div style={{width: '430px'}}>
-			<Board board={generateMines(3, 10, 10)}/>
-		</div>)
+		return <Board board={generateMines(3, 10, 10)}/>
 	}
 }
