@@ -2,6 +2,11 @@
     text-align: center;
 }
 
+.clickable {
+    user-select: none;
+    cursor: pointer;
+}
+
 .Loading-screen {
     animation: App-logo-spin infinite 5s linear;
 

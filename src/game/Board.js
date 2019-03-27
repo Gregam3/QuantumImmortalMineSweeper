@@ -81,7 +81,7 @@ export class Board extends Component {
 	victoryScreen() {
 		level++;
 
-		return (<div className="complete-screen" style={{width: '300px', height: '200px'}}>
+		return (<div className="complete-screen" style={{width: '350px', height: '250px'}}>
 			<br/>
 			<FontAwesomeIcon icon="trophy"/> Level Complete! <FontAwesomeIcon icon="trophy"/>
 			<Sound
@@ -93,8 +93,7 @@ export class Board extends Component {
 			/>
 			<br/>
 
-
-			<button onClick={() => this.generateNewBoard()}> Proceed to level {level + 1}</button>
+			<h1> <FontAwesomeIcon icon="chevron-circle-right" className="clickable" onClick={() => this.generateNewBoard()}/> </h1>
 			<br/>
 		</div>)
 	}
@@ -103,7 +102,7 @@ export class Board extends Component {
 		console.debug(this.state.lastEvent);
 
 		return (
-			<div className="fail-screen" style={{width: '300px', height: '200px'}}>
+			<div className="fail-screen" style={{width: '350px', height: '250px'}}>
 				<Sound
 					url={'explosion.mp3'}
 					autoLoad={true}
@@ -113,7 +112,7 @@ export class Board extends Component {
 				/>
 				<FontAwesomeIcon icon="frown"/> Level Failed <FontAwesomeIcon icon="frown"/>
 				<br/>
-				<button onClick={() => this.generateNewBoard()}> Retry level {level + 1} </button>
+				<h1> <FontAwesomeIcon icon="redo" className="clickable" onClick={() => this.generateNewBoard()}/> </h1>
 
 			</div>)
 	}

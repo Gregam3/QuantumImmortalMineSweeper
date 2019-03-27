@@ -47,7 +47,7 @@ export class LoadSpinner extends Component {
 			<div>
 				<img id="loading-spinner" style={{height: this.state.logoSize + 'vmin'}} src={logo}
 				     className="Loading-screen" alt="logo"/>
-				<p style={{paddingTop: '40px', color: '#2ce6ff'}}>
+				<p style={{paddingTop: '40px'}}>
 					{(this.state.currentLoadingMessage !== "Found!") ? this.state.currentLoadingMessage : ""}
 				</p>
 			</div>

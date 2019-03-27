@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faTrophy, faFrown } from '@fortawesome/free-solid-svg-icons';
+import { faTrophy, faFrown, faChevronCircleRight, faRedo } from '@fortawesome/free-solid-svg-icons';
 
 
 import './App.css';
@@ -9,7 +9,7 @@ import {Instructions} from "./Instructions";
 import {MineSweeper} from "./game/MineSweeper";
 
 //FA icons
-library.add(faTrophy, faFrown);
+library.add(faTrophy, faFrown, faChevronCircleRight, faRedo);
 
 document.addEventListener("contextmenu", function(e){
 	e.preventDefault();
