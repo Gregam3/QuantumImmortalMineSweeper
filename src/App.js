@@ -18,15 +18,13 @@ class App extends Component {
 				<header className="App-header">
 					<Router>
 						<div>
-							<Link to="/loading"><button>Load</button></Link>
 							<Link to="/instructions"><button>Instructions</button></Link>
-							<Link to="/play"><button>Start Game</button></Link>
+							<Link to="/play"><button>Play</button></Link>
 
 							<br/>
 							<br/>
 
 							<Route exact path="/play" component={MineSweeper}/>
-							<Route path="/loading" component={LoadSpinner}/>
 							<Route path="/instructions" component={Instructions}/>
 						</div>
 					</Router>

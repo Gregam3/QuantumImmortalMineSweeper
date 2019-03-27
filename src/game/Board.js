@@ -4,6 +4,7 @@ import React from "react";
 import Sound from 'react-sound';
 import '../App.css';
 import {generateMines} from "./MineSweeper";
+import {LoadSpinner} from "../LoadSpinner";
 
 const indexes = [-1, 0, 1];
 const permutations = indexes.flatMap(i => indexes.map(i1 => [i, i1]));
@@ -20,10 +21,11 @@ const Action = {
 const GameState = {
 	Playing: 0,
 	Failed: 1,
-	Success: 2
+	Success: 2,
+	Loading: 3
 };
 
-let gameState = GameState.Playing;
+let gameState = GameState.Loading;
 let level = 0;
 
 const levels = [[2, 10, 10], [5, 12, 12], [10, 14, 14], [20, 16, 16], [30, 20, 20]];
@@ -35,9 +37,6 @@ export class Board extends Component {
 		super(props);
 
 		this.state = {rows: props.board, lastEvent: null};
-
-		this.makeCellVisible = this.makeCellVisible.bind(this);
-		this.flag = this.flag.bind(this)
 	}
 
 	render() {
@@ -52,9 +51,14 @@ export class Board extends Component {
 		}
 
 		if (gameState === GameState.Playing) return this.game(mines, flags);
+		if(gameState === GameState.Loading) return <LoadSpinner onFinish={() => this.startPlaying()}/>;
 		if (gameState === GameState.Success) return this.victoryScreen();
-
 		return this.defeatScreen();
+	}
+
+	startPlaying() {
+		gameState = GameState.Playing;
+		this.setState({lastEvent: null})
 	}
 
 	game(mines, flags) {
@@ -110,7 +114,7 @@ export class Board extends Component {
 	}
 
 	generateNewBoard() {
-		gameState = GameState.Playing;
+		gameState = GameState.Loading;
 		const levelParams = levels[level];
 		this.setState({rows: generateMines(levelParams[0], levelParams[1], levelParams[2]), lastEvent: null});
 	}

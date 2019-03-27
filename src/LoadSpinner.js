@@ -38,6 +38,8 @@ export class LoadSpinner extends Component {
 			this.setState({logoSize: this.state.logoSize - 1});
 			await sleep(2);
 		}
+
+		this.props.onFinish();
 	};
 
 	render() {
