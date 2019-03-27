@@ -26,6 +26,9 @@ const GameState = {
 const COLS = 10, ROWS = 10;
 
 let gameState = GameState.Playing;
+let level = 0;
+
+const levels = [[2, 10, 10], [5, 10, 10], [10, 10, 10], [20, 10, 10], [30, 10, 10]];
 
 export class Board extends Component {
 	constructor(props) {
@@ -44,12 +47,12 @@ export class Board extends Component {
 		const clickedBomb = this.state.lastEvent === Action.Bomb;
 
 		if (JSON.stringify(mines) === JSON.stringify(flags) || clickedBomb) {
-			this.makeAllVisible(clickedBomb);
+			this.makeAllVisible();
 			gameState = (clickedBomb) ? GameState.Failed : GameState.Success;
 		}
 
-		if(gameState === GameState.Playing) return this.game(mines, flags);
-		if(gameState === GameState.Success) return this.victoryScreen();
+		if (gameState === GameState.Playing) return this.game(mines, flags);
+		if (gameState === GameState.Success) return this.victoryScreen();
 
 		return this.defeatScreen();
 	}
@@ -57,9 +60,10 @@ export class Board extends Component {
 	game(mines, flags) {
 		return (
 			(<div>{this.getAppropriateSoundEffect()}
-				Mines: {mines.length}
-				<br/>
-				Flags: {flags.length}
+				Level: {level + 1}
+			<br/>
+				💣 {mines.length}
+				🚩 {flags.length}
 				<br/>
 				{this.state.rows.map(row =>
 					row.map(cell => <Cell key={(cell.row, cell.col)}
@@ -70,6 +74,8 @@ export class Board extends Component {
 	}
 
 	victoryScreen() {
+		level++;
+
 		return (<div className="complete-screen"> Level Complete!
 			<Sound
 				url={'complete.mp3'}
@@ -79,7 +85,7 @@ export class Board extends Component {
 				playFromPosition={0}
 			/>
 			<br/>
-			<button onClick={() => this.generateNewBoard()}> Generate new Board </button>
+			<button onClick={() => this.generateNewBoard()}> Proceed to level {level + 1}</button>
 			<br/>
 		</div>)
 	}
@@ -87,16 +93,26 @@ export class Board extends Component {
 	defeatScreen() {
 		console.debug(this.state.lastEvent);
 
-		return (<div className="fail-screen"> Level Failed :(
-			<br/>
-			<button onClick={() => this.generateNewBoard()}> Try Again? </button>
+		return (
+			<div className="fail-screen">
+				<Sound
+					url={'explosion.mp3'}
+					autoLoad={true}
+					autoPlay={true}
+					playStatus={Sound.status.PLAYING}
+					playFromPosition={0}
+				/>
+				Level Failed :(
+				<br/>
+				<button onClick={() => this.generateNewBoard()}> Retry level {level + 1} </button>
 
-		</div>)
+			</div>)
 	}
 
 	generateNewBoard() {
 		gameState = GameState.Playing;
-		this.setState({rows: generateMines(), lastEvent: null});
+		const levelParams = levels[level];
+		this.setState({rows: generateMines(levelParams[0], levelParams[1], levelParams[2]), lastEvent: null});
 	}
 
 	getAppropriateSoundEffect() {
@@ -110,7 +126,7 @@ export class Board extends Component {
 			/>) : "";
 	}
 
-	makeAllVisible(failed) {
+	makeAllVisible() {
 		this.state.rows.forEach(r => r.forEach(c => c.visible = true));
 	}
 
@@ -138,7 +154,7 @@ export class Board extends Component {
 		let cells = this.state.rows;
 		let cell = cells[row][col];
 
-		this.setState({lastEvent: (cell.cellContent === -1) ? Action.Bomb: Action.Reveal});
+		this.setState({lastEvent: (cell.cellContent === -1) ? Action.Bomb : Action.Reveal});
 		cell.visible = true;
 		cells[row][col] = cell;
 
@@ -148,7 +164,7 @@ export class Board extends Component {
 	makeConnectedCellsVisible = () => {
 		let cells = this.state.rows;
 
-		for (let i = 0; i < 5; i++) scanForCellsThatShouldBeVisible();
+		for (let i = 0; i < 10; i++) scanForCellsThatShouldBeVisible();
 
 
 		return cells;
@@ -163,7 +179,7 @@ export class Board extends Component {
 
 		function makeApplicableCellVisible(r, c) {
 			if (r >= 0 && r < ROWS && c >= 0 && c < COLS)
-				if (!cells[r][c].visible)  {
+				if (!cells[r][c].visible) {
 					cells[r][c].visible = true;
 					cells[r][c].flagged = false;
 				}
@@ -171,8 +187,8 @@ export class Board extends Component {
 	};
 
 	flag = (row, col) => {
-		if(this.getFlags() >= this.getMines() && !this.state.rows[row][col].flagged) {
-			this.setState({lastEvent:Action.NoMoreFlags})
+		if (this.getFlags() >= this.getMines() && !this.state.rows[row][col].flagged) {
+			this.setState({lastEvent: Action.NoMoreFlags})
 		} else {
 			this.setState({lastEvent: Action.Flag});
 			let cells = this.state.rows;

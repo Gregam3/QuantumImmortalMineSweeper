@@ -11,7 +11,7 @@ export class Cell extends Component {
 
 	render() {
 		if (this.state.visible) return this.getCell();
-		if (this.state.flagged) return <div className="cell" onContextMenu={this.props.onContextMenu}>🏳️</div>;
+		if (this.state.flagged) return <div className="cell" onContextMenu={this.props.onContextMenu}>🚩</div>;
 		else return (<div className="cell" onClick={this.props.onClick} onContextMenu={this.props.onContextMenu}/>)
 	}
 
