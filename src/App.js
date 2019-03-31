@@ -1,15 +1,16 @@
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faTrophy, faFrown, faChevronCircleRight, faRedo } from '@fortawesome/free-solid-svg-icons';
+import { faTrophy, faFrown, faChevronCircleRight, faRedo, faPlayCircle, faQuestionCircle, faAtom } from '@fortawesome/free-solid-svg-icons';
 
 
 import './App.css';
 import {Instructions} from "./Instructions";
 import {MineSweeper} from "./game/MineSweeper";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 //FA icons
-library.add(faTrophy, faFrown, faChevronCircleRight, faRedo);
+library.add(faTrophy, faFrown, faChevronCircleRight, faRedo, faPlayCircle, faQuestionCircle, faAtom);
 
 document.addEventListener("contextmenu", function(e){
 	e.preventDefault();
@@ -23,8 +24,8 @@ class App extends Component {
 				<header className="App-header">
 					<Router>
 						<div >
-							<Link to="/instructions" ><button>Instructions</button></Link>
-							<Link to="/play" ><button>Play</button></Link>
+							<Link to="/play" ><button><FontAwesomeIcon icon="play-circle"/> Play</button></Link>
+							<Link to="/instructions" ><button><FontAwesomeIcon icon="question-circle"/> Instructions </button></Link>
 
 							<br/>
 							<br/>

@@ -28,8 +28,10 @@ const GameState = {
 
 let gameState = GameState.Loading;
 let level = 0;
+let start = new Date().getTime();
 
-const levels = [[2, 10, 10], [5, 12, 12], [10, 14, 14], [20, 16, 16], [30, 20, 20]];
+
+const levels = [[2, 10, 10], [5, 10, 15], [10, 15, 15], [20, 20, 15], [30, 20, 20]];
 
 const CELL_WIDTH = 40;
 
@@ -37,7 +39,7 @@ export class Board extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {rows: props.board, lastEvent: null};
+		this.state = {rows: props.board, lastEvent: null, calculating: false};
 	}
 
 	render() {
@@ -70,6 +72,11 @@ export class Board extends Component {
 				💣 {mines.length}
 				🚩 {flags.length}
 				<br/>
+				<div className="clickable" style={{color: '#47b8ff'}} onClick={() =>this.setState({calculating: !this.state.calculating})}>
+					<FontAwesomeIcon id="guess-button" className="clickable" icon="atom" style={{animation: (this.state.calculating) ? 'App-logo-spin infinite 2s linear' : ''}}/>
+					 Not Solvable <FontAwesomeIcon id="guess-button" className="clickable" icon="atom" style={{animation: (this.state.calculating) ? 'App-logo-spin infinite 2s linear' : ''}}/>
+				</div>
+				<br/>
 				{this.state.rows.map(row =>
 					row.map(cell => <Cell key={(cell.row, cell.col)}
 					                      cellState={cell}
@@ -99,8 +106,6 @@ export class Board extends Component {
 	}
 
 	defeatScreen() {
-		console.debug(this.state.lastEvent);
-
 		return (
 			<div className="fail-screen" style={{width: '350px', height: '250px'}}>
 				<Sound
@@ -174,7 +179,7 @@ export class Board extends Component {
 		let rows = this.rowCount();
 		let cols = this.colCount();
 
-		for (let i = 0; i < 10; i++) scanForCellsThatShouldBeVisible();
+		for (let i = 0; i < rows; i++) scanForCellsThatShouldBeVisible();
 
 		return cells;
 
