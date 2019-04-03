@@ -6,8 +6,9 @@ import { faTrophy, faFrown, faChevronCircleRight, faRedo, faPlayCircle, faQuesti
 
 import './App.css';
 import {Instructions} from "./Instructions";
-import {MineSweeper} from "./game/MineSweeper";
+import {BoardLogic} from "./game/BoardLogic";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {MineSweeper} from "./game/MineSweeper";
 
 //FA icons
 library.add(faTrophy, faFrown, faChevronCircleRight, faRedo, faPlayCircle, faQuestionCircle, faAtom);

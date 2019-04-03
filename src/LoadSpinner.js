@@ -18,7 +18,6 @@ export class LoadSpinner extends Component {
 
 	loadingText = async () => {
 		for (let i = 0; i < 4; i++) {
-			console.log(this.state.currentLoadingMessage);
 			if (i < 3) this.setState({currentLoadingMessage: this.state.currentLoadingMessage + '.'});
 			else {
 				this.setState({currentLoadingMessage: "Found!"});
