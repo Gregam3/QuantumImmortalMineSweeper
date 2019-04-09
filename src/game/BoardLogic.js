@@ -59,19 +59,28 @@ export function getFlags(rows) {
 };
 
 export function isSolvable(rows) {
-	const visibleSurroundingCells = rows.flatMap(c => c.filter(cell => cell.visible && cell.cellContent > 0));
+	const visibleCells = rows.flatMap(c => c.filter(cell => cell.visible));
+	const visibleSurroundingCells = visibleCells.filter(cell => cell.cellContent > 0);
 
 	if (!visibleSurroundingCells.length) return false;
 
 	console.debug('Visible Surrounding Cells', visibleSurroundingCells);
 
-	const cellsToCheck = visibleSurroundingCells.flatMap(c => getHiddenCellsSurroundingCells(rows, c.row, c.col)).filter(cell => Object.keys(cell).length !== 0);
+	const cellsToCheck = Array.from(new Set(visibleSurroundingCells.flatMap(c => getVisibleSurroundingCells(rows, c.row, c.col)).filter(cell => Object.keys(cell).length !== 0)));
 
 	console.debug('Cells to check', cellsToCheck);
 
-	console.debug(cellsToCheck.map(c => c.cellContent !== 8 - getSurroundingVisibleCount(rows, c.row, c.col)));
+	if(cellsToCheck.map(c => c.cellContent === getSurroundingCellsCount(rows, c.row, c.col) - getSurroundingVisibleCount(rows, c.row, c.col)).indexOf(true) >= 0) return true;
 
-	return false;
+	return visibleCells.filter(c => c.cellContent > 0).map(c => c.cellContent === getSurroundingFlagCount(rows, c.row, c.col) &&
+		getSurroundingCellsCount(rows, c.row, c.col) !== getSurroundingVisibleCount(rows, c.row, c.col)).indexOf(true) >= 0;
+}
+
+function getSurroundingCellsCount(rows, row, col) {
+	let surroundingCells = 0;
+	permutations.forEach(p => surroundingCells += Object.keys(safeGrid(rows, row + p[0], col + p[1])).length !== 0);
+
+	return surroundingCells - 1;
 }
 
 function getSurroundingVisibleCount(rows, row, col) {
@@ -85,12 +94,25 @@ function getSurroundingVisibleCount(rows, row, col) {
 		}
 	);
 
-	console.debug(rows[row][col].cellContent,8 - visibleOrFlaggedCellCount);
-	return visibleOrFlaggedCellCount;
+	return visibleOrFlaggedCellCount - 1;
 }
 
-function getHiddenCellsSurroundingCells(rows, row, col) {
-	return permutations.map(p => safeGrid(rows, row + p[0], col + p[1])).filter(c => !c.visible);
+function getSurroundingFlagCount(rows, row, col) {
+	let flaggedCellCount = 0;
+	let currentCell = {};
+	permutations.forEach(p => {
+			currentCell = safeGrid(rows, row + p[0], col + p[1]);
+
+			if(Object.keys(currentCell).length !== 0)
+				if(currentCell.flagged) flaggedCellCount++;
+		}
+	);
+
+	return flaggedCellCount - 1;
+}
+
+function getVisibleSurroundingCells(rows, row, col) {
+	return permutations.map(p => safeGrid(rows, row + p[0], col + p[1])).filter(c => c.visible && c.cellContent > 0);
 }
 
 function safeGrid(rows, row, col) {
