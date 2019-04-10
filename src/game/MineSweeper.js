@@ -29,24 +29,29 @@ const GameState = {
 let gameState = GameState.Loading;
 let level = 0;
 
-const levels = [[2, 10, 10], [5, 10, 15], [10, 15, 15], [15, 15, 20], [30, 20, 20]];
+const levels = [ [15, 15, 20], [5, 10, 15], [10, 15, 15], [15, 15, 20], [30, 20, 20]];
+// const levels = [[2, 10, 10], [5, 10, 15], [10, 15, 15], [15, 15, 20], [30, 20, 20]];
 
 const CELL_WIDTH = 40;
 
 export class MineSweeper extends Component {
 	buttonStates = {
+		revealingCell: <div style={{color: '#47b8ff'}}>
+			<FontAwesomeIcon  icon="search" style={{animation: 'wobble infinite 0.2s linear alternate'}}/>
+			&nbsp; Revealing Cell &nbsp; <FontAwesomeIcon  icon="search" style={{animation: 'wobble infinite 0.2s linear alternate'}}/>
+		</div>,
 		passive: <div className="clickable" style={{color: '#47b8ff'}} onClick={() => this.checkSolvability()}>
-			<FontAwesomeIcon icon="atom" />Solvable? <FontAwesomeIcon icon="atom"/>
+			<FontAwesomeIcon icon="atom" />&nbsp; Solve&nbsp; <FontAwesomeIcon icon="atom"/>
 		</div>,
 		calculating: <div style={{color: '#47b8ff'}}>
-			<FontAwesomeIcon  icon="atom" style={{animation: 'App-logo-spin infinite 2s linear'}}/>
-			Calculating <FontAwesomeIcon  icon="atom" style={{animation: 'App-logo-spin infinite 2s linear'}}/>
+			<FontAwesomeIcon  icon="atom" style={{animation: 'spin infinite 2s linear'}}/>
+			&nbsp; Calculating &nbsp; <FontAwesomeIcon  icon="atom" style={{animation: 'spin infinite 2s linear'}}/>
 		</div>,
 		possible: <div style={{color: '#058d00'}}>
-			<FontAwesomeIcon icon="check"/>Solvable <FontAwesomeIcon  icon="check"/>
+			<FontAwesomeIcon icon="check"/>&nbsp; Solvable &nbsp; <FontAwesomeIcon  icon="check"/>
 		</div>,
 		impossible: <div style={{color: '#a10002'}}>
-			<FontAwesomeIcon icon="times"/>Not Solvable <FontAwesomeIcon  icon="times"/>
+			<FontAwesomeIcon icon="times"/>&nbsp; Not Solvable &nbsp; <FontAwesomeIcon  icon="times"/>
 		</div>
 	};
 
@@ -56,7 +61,7 @@ export class MineSweeper extends Component {
 		this.state = {
 			rows: generateMines(levels[0][0], levels[0][1], levels[0][2]),
 			lastEvent: null,
-			solvabilityButton: this.buttonStates.passive
+			solvabilityButton: this.buttonStates.calculating
 		};
 	}
 
@@ -78,17 +83,41 @@ export class MineSweeper extends Component {
 	}
 
 	checkSolvability = async () => {
-		this.setState({solvabilityButton: this.buttonStates.calculating, lastEvent: null});
+		this.setState({solvabilityButton: this.buttonStates.calculating, lastEvent: Action.Reveal});
 		await sleep(1000);
-		this.setState({solvabilityButton: isSolvable(this.state.rows) ? this.buttonStates.possible : this.buttonStates.impossible});
+
+		const solvable = isSolvable(this.state.rows);
+		if(!solvable) {
+			await sleep(1000);
+
+			while (!isSolvable(this.state.rows)) {
+				this.setState({solvabilityButton: this.buttonStates.impossible});
+				await sleep(500);
+				this.setState({solvabilityButton: this.buttonStates.revealingCell});
+				await sleep(500);
+				this.revealCell();
+			}
+		}
+
+		this.setState({solvabilityButton: this.buttonStates.possible, lastEvent: null});
 		await sleep(2000);
 		this.setState({solvabilityButton: this.buttonStates.passive});
 	};
 
-	startPlaying() {
-		gameState = GameState.Playing;
-		this.setState({lastEvent: null})
+	revealCell() {
+		const cell = this.state.rows[Math.floor(Math.random() * this.state.rows.length)][Math.floor(Math.random() * this.state.rows.length)];
+
+		if(cell.cellContent > -1) this.makeCellVisible(cell.row, cell.col);
+		else this.revealCell();
 	}
+
+	startPlaying = async () =>  {
+		gameState = GameState.Playing;
+		this.setState({lastEvent: null, solvabilityButton: this.buttonStates.revealingCell});
+		await sleep(1500);
+		await this.checkSolvability();
+		this.setState({solvabilityButton: this.buttonStates.passive});
+	};
 
 	game(mines, flags) {
 		return (
@@ -96,6 +125,7 @@ export class MineSweeper extends Component {
 				width: this.colCount() * CELL_WIDTH + 'px',
 				fontFamily: 'BebasNeueRegular'
 			}}>{this.getAppropriateSoundEffect()}
+			<div>
 				Level: {level + 1}
 				<br/>
 				💣 {mines.length}
@@ -103,6 +133,7 @@ export class MineSweeper extends Component {
 				<br/>
 				{this.state.solvabilityButton}
 				<br/>
+			</div>
 				{this.state.rows.map(row =>
 					row.map(cell => <Cell key={(cell.row, cell.col)}
 					                      cellState={cell}
@@ -125,7 +156,6 @@ export class MineSweeper extends Component {
 				playFromPosition={0}
 			/>
 			<br/>
-
 			<h1><FontAwesomeIcon icon="chevron-circle-right" className="clickable"
 			                     onClick={() => this.generateNewBoard()}/></h1>
 			<br/>
@@ -153,6 +183,7 @@ export class MineSweeper extends Component {
 		gameState = GameState.Loading;
 		const levelParams = levels[level];
 		this.setState({rows: generateMines(levelParams[0], levelParams[1], levelParams[2]), lastEvent: null});
+		this.startPlaying();
 	}
 
 	getAppropriateSoundEffect() {
@@ -226,6 +257,8 @@ export class MineSweeper extends Component {
 			cells[row][col] = cell;
 
 			this.setState(cells);
+
+			console.debug('Flagged: ' + row +":" + col)
 		}
 	};
 }

@@ -64,19 +64,30 @@ export function isSolvable(rows) {
 
 	if (!visibleSurroundingCells.length) return false;
 
-	console.debug('Visible Surrounding Cells', visibleSurroundingCells);
+	// console.debug('Visible Surrounding Cells', visibleSurroundingCells);
 
-	const cellsToCheck = Array.from(new Set(visibleSurroundingCells.flatMap(c => getVisibleSurroundingCells(rows, c.row, c.col)).filter(cell => Object.keys(cell).length !== 0)));
+	const cellsToCheck = Array.from(new Set(visibleSurroundingCells.flatMap(c => getVisibleSurroundingCells(rows, c.row, c.col))
+		.filter(cell => Object.keys(cell).length !== 0 && getSurroundingCellCount(rows, cell.row, cell.col) > getSurroundingVisibleCount(rows, cell.row, cell.col))));
 
 	console.debug('Cells to check', cellsToCheck);
 
-	if(cellsToCheck.map(c => c.cellContent === getSurroundingCellsCount(rows, c.row, c.col) - getSurroundingVisibleCount(rows, c.row, c.col)).indexOf(true) >= 0) return true;
+	if (cellsToCheck.map(c => {
+		if (c.cellContent === getSurroundingCellCount(rows, c.row, c.col) - getSurroundingVisibleCount(rows, c.row, c.col))
+			console.debug('Solvable because cell - ' + c.row + ":" + c.col + " surrounding cell count - surrounding visible cell count is equal to cell content");
+		return c.cellContent - getSurroundingFlagCount(rows, c.row, c.col) === getSurroundingCellCount(rows, c.row, c.col) - getSurroundingVisibleCount(rows, c.row, c.col) - getSurroundingFlagCount(rows, c.row, c.col)
+	}).indexOf(true) >= 0) return true;
 
-	return visibleCells.filter(c => c.cellContent > 0).map(c => c.cellContent === getSurroundingFlagCount(rows, c.row, c.col) &&
-		getSurroundingCellsCount(rows, c.row, c.col) !== getSurroundingVisibleCount(rows, c.row, c.col)).indexOf(true) >= 0;
+	return visibleCells.filter(c => c.cellContent > 0).map(c => {
+		if (c.cellContent === getSurroundingFlagCount(rows, c.row, c.col) &&
+			getSurroundingCellCount(rows, c.row, c.col) !== getSurroundingVisibleCount(rows, c.row, c.col))
+			console.debug('Solvable because cell - ' + c.row + ":" + c.col + " flag count(" + getSurroundingFlagCount(rows, c.row, c.col) +
+				") == cell content and not all surrounding cells (" + getSurroundingCellCount(rows, c.row, c.col) + ") are visible (" + getSurroundingVisibleCount(rows, c.row, c.col) + ")");
+		return c.cellContent === getSurroundingFlagCount(rows, c.row, c.col) &&
+			getSurroundingCellCount(rows, c.row, c.col) !== getSurroundingVisibleCount(rows, c.row, c.col)
+	}).indexOf(true) >= 0;
 }
 
-function getSurroundingCellsCount(rows, row, col) {
+function getSurroundingCellCount(rows, row, col) {
 	let surroundingCells = 0;
 	permutations.forEach(p => surroundingCells += Object.keys(safeGrid(rows, row + p[0], col + p[1])).length !== 0);
 
@@ -89,8 +100,8 @@ function getSurroundingVisibleCount(rows, row, col) {
 	permutations.forEach(p => {
 			currentCell = safeGrid(rows, row + p[0], col + p[1]);
 
-			if(Object.keys(currentCell).length !== 0)
-				if(currentCell.visible || currentCell.flagged) visibleOrFlaggedCellCount++;
+			if (Object.keys(currentCell).length !== 0)
+				if (currentCell.visible || currentCell.flagged) visibleOrFlaggedCellCount++;
 		}
 	);
 
@@ -103,12 +114,12 @@ function getSurroundingFlagCount(rows, row, col) {
 	permutations.forEach(p => {
 			currentCell = safeGrid(rows, row + p[0], col + p[1]);
 
-			if(Object.keys(currentCell).length !== 0)
-				if(currentCell.flagged) flaggedCellCount++;
+			if (Object.keys(currentCell).length !== 0)
+				if (currentCell.flagged) flaggedCellCount++;
 		}
 	);
 
-	return flaggedCellCount - 1;
+	return flaggedCellCount;
 }
 
 function getVisibleSurroundingCells(rows, row, col) {

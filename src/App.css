@@ -16,7 +16,7 @@ button {
 }
 
 .Loading-screen {
-    animation: App-logo-spin infinite 5s linear;
+    animation: spin infinite 5s linear;
 
     pointer-events: none;
     padding-bottom: 20px;
@@ -37,17 +37,17 @@ button {
     color: #61dafb;
 }
 
-@keyframes App-logo-spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+@keyframes wobble {
+    from {transform: translate(-10px);}
+    to {transform: translate(10px);}
+}
+
+@keyframes spin {
+    from {transform: rotate(0deg);}
+    to {transform: rotate(360deg);}
 }
 
 .threed-border {
-
     border-width: 1px;
     border-style: solid;
     border-bottom-color: #aaa;
