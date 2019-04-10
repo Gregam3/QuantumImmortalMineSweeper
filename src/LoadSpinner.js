@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import logo from "./mylogo.png";
 
 
-const sleep = (milliseconds) => {
+export const sleep = (milliseconds) => {
 	return new Promise(resolve => setTimeout(resolve, milliseconds))
 };
 

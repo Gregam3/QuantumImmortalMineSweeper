@@ -1,17 +1,16 @@
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faTrophy, faFrown, faChevronCircleRight, faRedo, faPlayCircle, faQuestionCircle, faAtom } from '@fortawesome/free-solid-svg-icons';
+import { faTrophy, faFrown, faChevronCircleRight, faRedo, faPlayCircle, faQuestionCircle, faAtom, faCheck, faTimes } from '@fortawesome/free-solid-svg-icons';
 
 
 import './App.css';
 import {Instructions} from "./Instructions";
-import {BoardLogic} from "./game/BoardLogic";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {MineSweeper} from "./game/MineSweeper";
 
 //FA icons
-library.add(faTrophy, faFrown, faChevronCircleRight, faRedo, faPlayCircle, faQuestionCircle, faAtom);
+library.add(faTrophy, faFrown, faChevronCircleRight, faRedo, faPlayCircle, faQuestionCircle, faAtom, faCheck, faTimes);
 
 document.addEventListener("contextmenu", function(e){
 	e.preventDefault();

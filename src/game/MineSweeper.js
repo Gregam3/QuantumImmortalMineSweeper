@@ -4,7 +4,7 @@ import React from "react";
 import Sound from 'react-sound';
 import '../App.css';
 import {generateMines, getFlags, getMines, isSolvable} from "./BoardLogic";
-import {LoadSpinner} from "../LoadSpinner";
+import {LoadSpinner, sleep} from "../LoadSpinner";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
 
 const indexes = [-1, 0, 1];
@@ -28,20 +28,35 @@ const GameState = {
 
 let gameState = GameState.Loading;
 let level = 0;
-let start = new Date().getTime();
 
 const levels = [[2, 10, 10], [5, 10, 15], [10, 15, 15], [15, 15, 20], [30, 20, 20]];
 
 const CELL_WIDTH = 40;
 
 export class MineSweeper extends Component {
+	buttonStates = {
+		passive: <div className="clickable" style={{color: '#47b8ff'}} onClick={() => this.checkSolvability()}>
+			<FontAwesomeIcon icon="atom" />Solvable? <FontAwesomeIcon icon="atom"/>
+		</div>,
+		calculating: <div style={{color: '#47b8ff'}}>
+			<FontAwesomeIcon  icon="atom" style={{animation: 'App-logo-spin infinite 2s linear'}}/>
+			Calculating <FontAwesomeIcon  icon="atom" style={{animation: 'App-logo-spin infinite 2s linear'}}/>
+		</div>,
+		possible: <div style={{color: '#058d00'}}>
+			<FontAwesomeIcon icon="check"/>Solvable <FontAwesomeIcon  icon="check"/>
+		</div>,
+		impossible: <div style={{color: '#a10002'}}>
+			<FontAwesomeIcon icon="times"/>Not Solvable <FontAwesomeIcon  icon="times"/>
+		</div>
+	};
+
 	constructor(props) {
 		super(props);
 
 		this.state = {
 			rows: generateMines(levels[0][0], levels[0][1], levels[0][2]),
 			lastEvent: null,
-			calculating: false
+			solvabilityButton: this.buttonStates.passive
 		};
 	}
 
@@ -62,6 +77,14 @@ export class MineSweeper extends Component {
 		return this.defeatScreen();
 	}
 
+	checkSolvability = async () => {
+		this.setState({solvabilityButton: this.buttonStates.calculating, lastEvent: null});
+		await sleep(1000);
+		this.setState({solvabilityButton: isSolvable(this.state.rows) ? this.buttonStates.possible : this.buttonStates.impossible});
+		await sleep(2000);
+		this.setState({solvabilityButton: this.buttonStates.passive});
+	};
+
 	startPlaying() {
 		gameState = GameState.Playing;
 		this.setState({lastEvent: null})
@@ -78,13 +101,7 @@ export class MineSweeper extends Component {
 				💣 {mines.length}
 				🚩 {flags.length}
 				<br/>
-				<div className="clickable" style={{color: '#47b8ff'}}
-				     onClick={() => this.checkSolvability()}>
-					<FontAwesomeIcon id="guess-button" className="clickable" icon="atom"
-					                 style={{animation: (this.state.calculating) ? 'App-logo-spin infinite 2s linear' : ''}}/>
-					Not Solvable <FontAwesomeIcon id="guess-button" className="clickable" icon="atom"
-					                              style={{animation: (this.state.calculating) ? 'App-logo-spin infinite 2s linear' : ''}}/>
-				</div>
+				{this.state.solvabilityButton}
 				<br/>
 				{this.state.rows.map(row =>
 					row.map(cell => <Cell key={(cell.row, cell.col)}
@@ -92,11 +109,6 @@ export class MineSweeper extends Component {
 					                      onClick={() => this.makeCellVisible(cell.row, cell.col)}
 					                      onContextMenu={() => this.flag(cell.row, cell.col)}/>))}
 			</div>))
-	}
-
-	checkSolvability() {
-		this.setState({calculating: !this.state.calculating});
-		console.debug('Solvable?', isSolvable(this.state.rows));
 	}
 
 	victoryScreen() {
