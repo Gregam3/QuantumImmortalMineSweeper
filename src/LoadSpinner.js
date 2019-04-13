@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import logo from "./mylogo.png";
+import logo from "./logo.svg";
 
 
 export const sleep = (milliseconds) => {
