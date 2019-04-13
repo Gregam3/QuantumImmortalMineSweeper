@@ -20,17 +20,14 @@ const Action = {
 };
 
 const GameState = {
-	Playing: 0,
-	Failed: 1,
-	Success: 2,
-	Loading: 3
+	Playing: 0,	Failed: 1, Success: 2, Loading: 3
 };
 
 let gameState = GameState.Loading;
 let level = 0;
 
-const levels = [ [15, 15, 20], [5, 10, 15], [10, 15, 15], [15, 15, 20], [30, 20, 20]];
-// const levels = [[2, 10, 10], [5, 10, 15], [10, 15, 15], [15, 15, 20], [30, 20, 20]];
+// const levels = [ [15, 15, 20], [5, 10, 15], [10, 15, 15], [15, 15, 20], [30, 20, 20]];
+const levels = [[2, 10, 10], [5, 10, 10], [15, 15, 15], [15, 15, 20], [25, 17, 17]];
 
 const CELL_WIDTH = 40;
 
@@ -83,7 +80,7 @@ export class MineSweeper extends Component {
 	}
 
 	checkSolvability = async () => {
-		this.setState({solvabilityButton: this.buttonStates.calculating, lastEvent: Action.Reveal});
+		this.setState({solvabilityButton: this.buttonStates.calculating, lastEvent: null});
 		await sleep(1000);
 
 		const solvable = isSolvable(this.state.rows);
@@ -99,7 +96,7 @@ export class MineSweeper extends Component {
 			}
 		}
 
-		this.setState({solvabilityButton: this.buttonStates.possible, lastEvent: null});
+		this.setState({solvabilityButton: this.buttonStates.possible});
 		await sleep(2000);
 		this.setState({solvabilityButton: this.buttonStates.passive});
 	};
@@ -125,14 +122,16 @@ export class MineSweeper extends Component {
 				width: this.colCount() * CELL_WIDTH + 'px',
 				fontFamily: 'BebasNeueRegular'
 			}}>{this.getAppropriateSoundEffect()}
-			<div>
+			<div style={{fontSize: '35px'}}>
 				Level: {level + 1}
 				<br/>
 				💣 {mines.length}
 				🚩 {flags.length}
 				<br/>
-				{this.state.solvabilityButton}
-				<br/>
+				<div style={{width:'300px', left:0, right:0, marginLeft: 'auto', marginRight: 'auto', position: 'absolute',
+					backgroundColor: '#fff', borderRadius: '25px', userSelect: 'none', cursor:'progress'}}>
+					{this.state.solvabilityButton}</div>
+				<br/><br/>
 			</div>
 				{this.state.rows.map(row =>
 					row.map(cell => <Cell key={(cell.row, cell.col)}
@@ -143,7 +142,7 @@ export class MineSweeper extends Component {
 	}
 
 	victoryScreen() {
-		level++;
+		if(level < 4) level++;
 
 		return (<div className="complete-screen" style={{width: '350px', height: '250px'}}>
 			<br/>
@@ -156,7 +155,7 @@ export class MineSweeper extends Component {
 				playFromPosition={0}
 			/>
 			<br/>
-			<h1><FontAwesomeIcon icon="chevron-circle-right" className="clickable"
+			<h1><FontAwesomeIcon icon={level === 4 ? "redo" : "chevron-circle-right"} className="clickable"
 			                     onClick={() => this.generateNewBoard()}/></h1>
 			<br/>
 		</div>)
@@ -182,7 +181,7 @@ export class MineSweeper extends Component {
 	generateNewBoard() {
 		gameState = GameState.Loading;
 		const levelParams = levels[level];
-		this.setState({rows: generateMines(levelParams[0], levelParams[1], levelParams[2]), lastEvent: null});
+		this.setState({rows: generateMines(levelParams[0], levelParams[1], levelParams[2])});
 		this.startPlaying();
 	}
 

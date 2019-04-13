@@ -72,18 +72,21 @@ export function isSolvable(rows) {
 	console.debug('Cells to check', cellsToCheck);
 
 	if (cellsToCheck.map(c => {
-		if (c.cellContent === getSurroundingCellCount(rows, c.row, c.col) - getSurroundingVisibleCount(rows, c.row, c.col))
-			console.debug('Solvable because cell - ' + c.row + ":" + c.col + " surrounding cell count - surrounding visible cell count is equal to cell content");
-		return c.cellContent - getSurroundingFlagCount(rows, c.row, c.col) === getSurroundingCellCount(rows, c.row, c.col) - getSurroundingVisibleCount(rows, c.row, c.col) - getSurroundingFlagCount(rows, c.row, c.col)
+		if (c.cellContent  - getSurroundingFlagCount(rows, c.row, c.col) === getSurroundingCellCount(rows, c.row, c.col) - getSurroundingVisibleCount(rows, c.row, c.col) &&
+			c.cellContent - getSurroundingFlagCount(rows, c.row, c.col) > 0)
+			console.debug('Solvable cell - ' + c.row + ":" + c.col);
+		return c.cellContent - getSurroundingFlagCount(rows, c.row, c.col) === getSurroundingCellCount(rows, c.row, c.col) - getSurroundingVisibleCount(rows, c.row, c.col) &&
+			c.cellContent - getSurroundingFlagCount(rows, c.row, c.col) > 0
 	}).indexOf(true) >= 0) return true;
 
 	return visibleCells.filter(c => c.cellContent > 0).map(c => {
 		if (c.cellContent === getSurroundingFlagCount(rows, c.row, c.col) &&
-			getSurroundingCellCount(rows, c.row, c.col) !== getSurroundingVisibleCount(rows, c.row, c.col))
-			console.debug('Solvable because cell - ' + c.row + ":" + c.col + " flag count(" + getSurroundingFlagCount(rows, c.row, c.col) +
-				") == cell content and not all surrounding cells (" + getSurroundingCellCount(rows, c.row, c.col) + ") are visible (" + getSurroundingVisibleCount(rows, c.row, c.col) + ")");
+			getSurroundingCellCount(rows, c.row, c.col) !== getSurroundingVisibleCount(rows, c.row, c.col) &&
+			c.cellContent - getSurroundingFlagCount(rows, c.row, c.col) > 0)
+			console.debug('Solvable cell - ' + c.row + ":" + c.col);
 		return c.cellContent === getSurroundingFlagCount(rows, c.row, c.col) &&
-			getSurroundingCellCount(rows, c.row, c.col) !== getSurroundingVisibleCount(rows, c.row, c.col)
+			getSurroundingCellCount(rows, c.row, c.col) !== getSurroundingVisibleCount(rows, c.row, c.col) &&
+			c.cellContent - getSurroundingFlagCount(rows, c.row, c.col) > 0
 	}).indexOf(true) >= 0;
 }
 
@@ -101,7 +104,7 @@ function getSurroundingVisibleCount(rows, row, col) {
 			currentCell = safeGrid(rows, row + p[0], col + p[1]);
 
 			if (Object.keys(currentCell).length !== 0)
-				if (currentCell.visible || currentCell.flagged) visibleOrFlaggedCellCount++;
+				if (currentCell.visible) visibleOrFlaggedCellCount++;
 		}
 	);
 
