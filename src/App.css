@@ -1,5 +1,6 @@
 .App {
     text-align: center;
+    user-select: none;
 }
 
 button {
@@ -67,13 +68,21 @@ button {
     user-select: none;
 }
 
+.content-cell {
+    background-color: #656666;
+    height: 36px;
+    width: 36px;
+    float: right;
+    margin: 0;
+    user-select: none;
+}
+
 .safe-cell {
     background-color: #9e9ba0;
     height: 36px;
     width: 36px;
     float: right;
     margin: 0;
-    cursor: pointer;
     user-select: none;
 }
 
@@ -83,7 +92,6 @@ button {
     width: 40px;
     float: right;
     margin: 0;
-    cursor: pointer;
     user-select: none;
 }
 

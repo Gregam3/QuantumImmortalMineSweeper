@@ -26,7 +26,7 @@ const GameState = {
 let gameState = GameState.Loading;
 let level = 0;
 
-// const levels = [ [15, 15, 20], [5, 10, 15], [10, 15, 15], [15, 15, 20], [30, 20, 20]];
+// const levels = [ [0.001, 15, 20], [5, 10, 15], [10, 15, 15], [15, 15, 20], [30, 20, 20]];
 const levels = [[2, 10, 10], [5, 10, 10], [15, 15, 15], [15, 15, 20], [25, 17, 17]];
 
 const CELL_WIDTH = 40;
@@ -52,12 +52,13 @@ export class MineSweeper extends Component {
 		</div>
 	};
 
+	lastEvent = null;
+
 	constructor(props) {
 		super(props);
 
 		this.state = {
 			rows: generateMines(levels[0][0], levels[0][1], levels[0][2]),
-			lastEvent: null,
 			solvabilityButton: this.buttonStates.calculating
 		};
 	}
@@ -66,7 +67,7 @@ export class MineSweeper extends Component {
 		const mines = getMines(this.state.rows);
 		const flags = getFlags(this.state.rows);
 
-		const clickedBomb = this.state.lastEvent === Action.Bomb;
+		const clickedBomb = this.lastEvent === Action.Bomb;
 
 		if (JSON.stringify(mines) === JSON.stringify(flags) || clickedBomb) {
 			this.makeAllVisible();
@@ -80,19 +81,24 @@ export class MineSweeper extends Component {
 	}
 
 	checkSolvability = async () => {
-		this.setState({solvabilityButton: this.buttonStates.calculating, lastEvent: null});
+		this.setState({solvabilityButton: this.buttonStates.calculating});
+		this.lastEvent = null;
 		await sleep(1000);
 
 		const solvable = isSolvable(this.state.rows);
 		if(!solvable) {
 			await sleep(1000);
 
+			let waitTime = 500;
+
 			while (!isSolvable(this.state.rows)) {
 				this.setState({solvabilityButton: this.buttonStates.impossible});
-				await sleep(500);
+				await sleep(waitTime);
 				this.setState({solvabilityButton: this.buttonStates.revealingCell});
-				await sleep(500);
+				await sleep(waitTime);
 				this.revealCell();
+
+				waitTime = waitTime * 0.8;
 			}
 		}
 
@@ -110,7 +116,8 @@ export class MineSweeper extends Component {
 
 	startPlaying = async () =>  {
 		gameState = GameState.Playing;
-		this.setState({lastEvent: null, solvabilityButton: this.buttonStates.revealingCell});
+		this.setState({ solvabilityButton: this.buttonStates.revealingCell});
+		this.lastEvent = null;
 		await sleep(1500);
 		await this.checkSolvability();
 		this.setState({solvabilityButton: this.buttonStates.passive});
@@ -123,30 +130,32 @@ export class MineSweeper extends Component {
 				fontFamily: 'BebasNeueRegular'
 			}}>{this.getAppropriateSoundEffect()}
 			<div style={{fontSize: '35px'}}>
-				Level: {level + 1}
-				<br/>
 				💣 {mines.length}
 				🚩 {flags.length}
+
+				&nbsp; &nbsp; &nbsp; Level: {level + 1}
 				<br/>
 				<div style={{width:'300px', left:0, right:0, marginLeft: 'auto', marginRight: 'auto', position: 'absolute',
 					backgroundColor: '#fff', borderRadius: '25px', userSelect: 'none', cursor:'progress'}}>
 					{this.state.solvabilityButton}</div>
-				<br/><br/>
+				<br/>
+
 			</div>
+				<div style={{marginTop: '20px'}}>
 				{this.state.rows.map(row =>
 					row.map(cell => <Cell key={(cell.row, cell.col)}
 					                      cellState={cell}
 					                      onClick={() => this.makeCellVisible(cell.row, cell.col)}
-					                      onContextMenu={() => this.flag(cell.row, cell.col)}/>))}
+					                      onContextMenu={() => this.flag(cell.row, cell.col)}/>))} </div>
 			</div>))
 	}
 
 	victoryScreen() {
 		if(level < 4) level++;
 
-		return (<div className="complete-screen" style={{width: '350px', height: '250px'}}>
+		return (<div className="complete-screen" style={{width: '500px', height: '400px',  fontSize: '50px'}}>
 			<br/>
-			<FontAwesomeIcon icon="trophy"/> Level Complete! <FontAwesomeIcon icon="trophy"/>
+			<FontAwesomeIcon icon="trophy"/> Level {level} Complete! <FontAwesomeIcon icon="trophy"/>
 			<Sound
 				url={'complete.mp3'}
 				autoLoad={true}
@@ -163,7 +172,7 @@ export class MineSweeper extends Component {
 
 	defeatScreen() {
 		return (
-			<div className="fail-screen" style={{width: '350px', height: '250px'}}>
+			<div className="fail-screen" style={{width: '500px', height: '400px', fontSize: '50px'}}>
 				<Sound
 					url={'explosion.mp3'}
 					autoLoad={true}
@@ -171,7 +180,9 @@ export class MineSweeper extends Component {
 					playStatus={Sound.status.PLAYING}
 					playFromPosition={0}
 				/>
-				<FontAwesomeIcon icon="frown"/> Level Failed <FontAwesomeIcon icon="frown"/>
+				<br/>
+
+				<FontAwesomeIcon icon="bomb"/> Level {level + 1} Failed <FontAwesomeIcon icon="bomb"/>
 				<br/>
 				<h1><FontAwesomeIcon icon="redo" className="clickable" onClick={() => this.generateNewBoard()}/></h1>
 
@@ -186,14 +197,17 @@ export class MineSweeper extends Component {
 	}
 
 	getAppropriateSoundEffect() {
-		return (this.state.lastEvent) ?
+		const sound =  (this.lastEvent) ?
 			(<Sound
-				url={this.state.lastEvent + '.mp3'}
+				url={this.lastEvent + '.mp3'}
 				autoLoad={true}
 				autoPlay={true}
 				playStatus={Sound.status.PLAYING}
 				playFromPosition={0}
 			/>) : "";
+		this.lastEvent = null;
+
+		return sound;
 	}
 
 	makeAllVisible() {
@@ -204,7 +218,7 @@ export class MineSweeper extends Component {
 		let cells = this.state.rows;
 		let cell = cells[row][col];
 
-		this.setState({lastEvent: (cell.cellContent === -1) ? Action.Bomb : Action.Reveal});
+		this.lastEvent = (cell.cellContent === -1) ? Action.Bomb : Action.Reveal;
 		cell.visible = true;
 		cells[row][col] = cell;
 
@@ -247,9 +261,9 @@ export class MineSweeper extends Component {
 
 	flag = (row, col) => {
 		if (getFlags(this.state.rows) >= getMines(this.state.rows) && !this.state.rows[row][col].flagged) {
-			this.setState({lastEvent: Action.NoMoreFlags})
+			this.lastEvent = Action.NoMoreFlags
 		} else {
-			this.setState({lastEvent: Action.Flag});
+			this.lastEvent = Action.Flag
 			let cells = this.state.rows;
 			let cell = cells[row][col];
 			cell.flagged = !cell.flagged;

@@ -25,6 +25,8 @@ export function generateMines(bombPercentage, rows, cols) {
 		}
 	}
 
+	if(cells.flatMap(r => r.filter(c => c.cellContent === -1)).length === 0) return generateMines(bombPercentage, rows, cols);
+
 	return cells;
 
 	function safeGrid(row, column) {
@@ -80,13 +82,8 @@ export function isSolvable(rows) {
 	}).indexOf(true) >= 0) return true;
 
 	return visibleCells.filter(c => c.cellContent > 0).map(c => {
-		if (c.cellContent === getSurroundingFlagCount(rows, c.row, c.col) &&
-			getSurroundingCellCount(rows, c.row, c.col) !== getSurroundingVisibleCount(rows, c.row, c.col) &&
-			c.cellContent - getSurroundingFlagCount(rows, c.row, c.col) > 0)
-			console.debug('Solvable cell - ' + c.row + ":" + c.col);
 		return c.cellContent === getSurroundingFlagCount(rows, c.row, c.col) &&
-			getSurroundingCellCount(rows, c.row, c.col) !== getSurroundingVisibleCount(rows, c.row, c.col) &&
-			c.cellContent - getSurroundingFlagCount(rows, c.row, c.col) > 0
+			getSurroundingCellCount(rows, c.row, c.col) > getSurroundingVisibleCount(rows, c.row, c.col) + getSurroundingFlagCount(rows, c.row, c.col)
 	}).indexOf(true) >= 0;
 }
 
