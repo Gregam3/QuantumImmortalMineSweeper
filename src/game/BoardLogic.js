@@ -25,6 +25,7 @@ export function generateMines(bombPercentage, rows, cols) {
 		}
 	}
 
+	console.debug(cells.flatMap(r => r.filter(c => c.cellContent === -1)).length === 0)
 	if(cells.flatMap(r => r.filter(c => c.cellContent === -1)).length === 0) return generateMines(bombPercentage, rows, cols);
 
 	return cells;

@@ -27,7 +27,7 @@ let gameState = GameState.Loading;
 let level = 0;
 
 // const levels = [ [0.001, 15, 20], [5, 10, 15], [10, 15, 15], [15, 15, 20], [30, 20, 20]];
-const levels = [[2, 10, 10], [5, 10, 10], [15, 15, 15], [15, 15, 20], [25, 17, 17]];
+const levels = [[2, 10, 10], [10, 10, 10], [15, 15, 15], [20, 15, 15], [25, 17, 17]];
 
 const CELL_WIDTH = 40;
 
@@ -38,7 +38,7 @@ export class MineSweeper extends Component {
 			&nbsp; Revealing Cell &nbsp; <FontAwesomeIcon  icon="search" style={{animation: 'wobble infinite 0.2s linear alternate'}}/>
 		</div>,
 		passive: <div className="clickable" style={{color: '#47b8ff'}} onClick={() => this.checkSolvability()}>
-			<FontAwesomeIcon icon="atom" />&nbsp; Solve&nbsp; <FontAwesomeIcon icon="atom"/>
+			<FontAwesomeIcon icon="atom" />&nbsp; Is Solvable?&nbsp; <FontAwesomeIcon icon="atom"/>
 		</div>,
 		calculating: <div style={{color: '#47b8ff'}}>
 			<FontAwesomeIcon  icon="atom" style={{animation: 'spin infinite 2s linear'}}/>
@@ -51,6 +51,8 @@ export class MineSweeper extends Component {
 			<FontAwesomeIcon icon="times"/>&nbsp; Not Solvable &nbsp; <FontAwesomeIcon  icon="times"/>
 		</div>
 	};
+
+	maxValue = 8;
 
 	lastEvent = null;
 
@@ -116,7 +118,6 @@ export class MineSweeper extends Component {
 
 	startPlaying = async () =>  {
 		gameState = GameState.Playing;
-		this.setState({ solvabilityButton: this.buttonStates.revealingCell});
 		this.lastEvent = null;
 		await sleep(1500);
 		await this.checkSolvability();
@@ -151,7 +152,11 @@ export class MineSweeper extends Component {
 	}
 
 	victoryScreen() {
-		if(level < 4) level++;
+		if(level < 5 && !this.levelledUp) {
+			level++;
+			this.levelledUp = true;
+			console.debug('test')
+		}
 
 		return (<div className="complete-screen" style={{width: '500px', height: '400px',  fontSize: '50px'}}>
 			<br/>
@@ -164,7 +169,7 @@ export class MineSweeper extends Component {
 				playFromPosition={0}
 			/>
 			<br/>
-			<h1><FontAwesomeIcon icon={level === 4 ? "redo" : "chevron-circle-right"} className="clickable"
+			<h1><FontAwesomeIcon icon={level === 5 ? "redo" : "chevron-circle-right"} className="clickable"
 			                     onClick={() => this.generateNewBoard()}/></h1>
 			<br/>
 		</div>)
@@ -190,10 +195,10 @@ export class MineSweeper extends Component {
 	}
 
 	generateNewBoard() {
-		gameState = GameState.Loading;
+		this.levelledUp = false;
+		this.startPlaying()
 		const levelParams = levels[level];
 		this.setState({rows: generateMines(levelParams[0], levelParams[1], levelParams[2])});
-		this.startPlaying();
 	}
 
 	getAppropriateSoundEffect() {
