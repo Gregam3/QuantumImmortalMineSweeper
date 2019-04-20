@@ -4,8 +4,8 @@ import YouTube from 'react-youtube';
 export class Instructions extends Component {
 	render() {
 		const opts = {
-			height: '390',
-			width: '640',
+			height: '600',
+			width: '1200',
 			playerVars: { // https://developers.google.com/youtube/player_parameters
 				autoplay: 1,
 				controls: 0,
@@ -16,8 +16,16 @@ export class Instructions extends Component {
 
 		return (
 			<YouTube
-				videoId="7B85WbEiYf4"
-				opts={opts}
+				videoId="UzBVbRD4Shk"
+				opts={{
+					height: '600',
+					width: '1200',
+					playerVars: { // https://developers.google.com/youtube/player_parameters
+						autoplay: 1,
+						controls: 0,
+						fs: 0,
+						loop: 1
+					}}}
 			/>
 		)
 	}

@@ -66,6 +66,7 @@ button {
     margin: 0;
     cursor: pointer;
     user-select: none;
+    font-size: 32px;
 }
 
 .content-cell {
@@ -75,6 +76,7 @@ button {
     float: right;
     margin: 0;
     user-select: none;
+    font-size: 32px;
 }
 
 .safe-cell {

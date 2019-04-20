@@ -11,12 +11,7 @@ const indexes = [-1, 0, 1];
 const permutations = indexes.flatMap(i => indexes.map(i1 => [i, i1]));
 
 const Action = {
-	Flag: "flag",
-	Reveal: "pop",
-	Bomb: "explosion",
-	Finished: "complete",
-	NoMoreFlags: "no-more-flags",
-	Loss: ""
+	Flag: "flag", Reveal: "pop", Bomb: "explosion", Finished: "complete", NoMoreFlags: "no-more-flags", Loss: ""
 };
 
 const GameState = {
@@ -112,7 +107,7 @@ export class MineSweeper extends Component {
 	revealCell() {
 		const cell = this.state.rows[Math.floor(Math.random() * this.state.rows.length)][Math.floor(Math.random() * this.state.rows.length)];
 
-		if(cell.cellContent > -1) this.makeCellVisible(cell.row, cell.col);
+		if(cell.cellContent > -1 && !cell.visible) this.makeCellVisible(cell.row, cell.col);
 		else this.revealCell();
 	}
 

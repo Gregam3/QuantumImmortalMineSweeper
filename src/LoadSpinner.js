@@ -2,9 +2,7 @@ import React, {Component} from 'react';
 import logo from "./logo.svg";
 
 
-export const sleep = (milliseconds) => {
-	return new Promise(resolve => setTimeout(resolve, milliseconds))
-};
+export const sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, milliseconds));
 
 export class LoadSpinner extends Component {
 	state = {

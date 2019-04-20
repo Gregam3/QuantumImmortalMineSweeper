@@ -1,5 +1,4 @@
 const indexes = [-1, 0, 1];
-
 const permutations = indexes.flatMap(i => indexes.map(i1 => [i, i1]));
 
 export function generateMines(bombPercentage, rows, cols) {
@@ -16,11 +15,7 @@ export function generateMines(bombPercentage, rows, cols) {
 			}
 
 			cells[r][c] = {
-				visible: false,
-				flagged: false,
-				cellContent: mineIndicator,
-				row: r,
-				col: c
+				visible: false, flagged: false, cellContent: mineIndicator,	row: r,	col: c
 			};
 		}
 	}
