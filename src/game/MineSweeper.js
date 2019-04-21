@@ -4,8 +4,9 @@ import React from "react";
 import Sound from 'react-sound';
 import '../App.css';
 import {generateMines, getFlags, getMines, isSolvable} from "./BoardLogic";
-import {LoadSpinner, sleep} from "../LoadSpinner";
+import {LoadSpinner} from "../LoadSpinner";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome'
+import {sleep} from "../App";
 
 const indexes = [-1, 0, 1];
 const permutations = indexes.flatMap(i => indexes.map(i1 => [i, i1]));
@@ -242,7 +243,6 @@ export class MineSweeper extends Component {
 		let cols = this.colCount();
 
 		while (scanForCellsThatShouldBeVisible()) {
-			scanForCellsThatShouldBeVisible();
 			await sleep(200);
 			console.debug('here');
 			this.lastEvent = Action.Reveal;

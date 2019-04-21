@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faTrophy, faFrown, faChevronCircleRight, faRedo, faPlayCircle, faQuestionCircle, faAtom, faCheck, faTimes, faSearch, faVolumeUp, faVolumeMute, faBomb} from '@fortawesome/free-solid-svg-icons';
+import { faTrophy, faFrown, faChevronCircleRight, faRedo, faPlayCircle,
+	faQuestionCircle, faAtom, faCheck, faTimes, faSearch, faVolumeUp,
+	faVolumeMute, faBomb, faRunning, faWalking} from '@fortawesome/free-solid-svg-icons';
 
 
 import './App.css';
@@ -10,14 +12,20 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {MineSweeper} from "./game/MineSweeper";
 import Sound from "react-sound";
 import logo from "./logo.svg";
-import {sleep} from "./LoadSpinner";
+
 
 //FA icons
-library.add(faTrophy, faFrown, faChevronCircleRight, faRedo, faPlayCircle, faQuestionCircle, faAtom, faCheck, faTimes, faSearch, faVolumeUp, faVolumeMute, faBomb);
+library.add(faTrophy, faFrown, faChevronCircleRight, faRedo, faPlayCircle,
+	faQuestionCircle, faAtom, faCheck, faTimes, faSearch, faVolumeUp, faVolumeMute,
+	faBomb, faRunning, faWalking);
 
 document.addEventListener("contextmenu", function(e){
 	e.preventDefault();
 }, false);
+
+export const sleep = (milliseconds) => new Promise(resolve => setTimeout(resolve, (fastMode) ? 0 : milliseconds));
+
+let fastMode = false;
 
 class App extends Component {
 
@@ -49,8 +57,8 @@ class App extends Component {
 							<Link to="/play" ><button><FontAwesomeIcon icon="play-circle"/> Play</button></Link>
 							<Link to="/instructions" ><button><FontAwesomeIcon icon="question-circle"/> Instructions </button></Link>
 							<br/>
-							<br/>
 							<div style={{cursor:'pointer'}} onClick={() => this.setState({play: !this.state.play})}> Music &nbsp; <FontAwesomeIcon icon={this.state.play ?  "volume-up" : "volume-mute"}/> </div>
+							<div style={{cursor:'pointer'}} onClick={() => this.toggleFastMode()}>  &nbsp;  &nbsp; Fast Mode &nbsp; <FontAwesomeIcon icon={this.state.fastMode ?  "walking" : "running"}/> </div>
 							<Route exact path="/play" component={MineSweeper}/>
 							<Route path="/instructions" component={Instructions}/>
 						</div>}
@@ -59,6 +67,13 @@ class App extends Component {
 				</header>
 			</div>
 		);
+	}
+
+	toggleFastMode() {
+		fastMode = !fastMode;
+		//Necessary to load correct icon
+		this.setState({fastMode});
+		console.debug(fastMode)
 	}
 
 	performIntro = async () => {
