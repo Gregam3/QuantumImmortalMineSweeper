@@ -46,8 +46,8 @@ class App extends Component {
 					playStatus={Sound.status.PLAYING}
 					playFromPosition={0}
 					loop={true}
-					// volume={this.state.play ? 40 : 0}
-					volume={0}
+					volume={this.state.play ? 40 : 0}
+					// volume={0}
 				/>
 
 				<header className="App-header">

@@ -119,8 +119,8 @@ export class MineSweeper extends Component {
 	startPlaying = async () => {
 		gameState = GameState.Playing;
 		this.lastEvent = null;
-		await sleep(1500);
 		await this.checkSolvability();
+		await sleep(1500);
 		this.setState({solvabilityButton: this.buttonStates.passive});
 	};
 
