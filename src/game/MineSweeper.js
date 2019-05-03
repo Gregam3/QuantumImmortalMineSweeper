@@ -22,7 +22,6 @@ const GameState = {
 let gameState = GameState.Loading;
 let level = 0;
 
-// const levels = [ [0.001, 15, 20], [5, 10, 15], [10, 15, 15], [15, 15, 20], [30, 20, 20]];
 const levels = [[2, 10, 10], [10, 10, 10], [15, 15, 15], [20, 15, 15], [25, 17, 17]];
 
 const CELL_WIDTH = 40;

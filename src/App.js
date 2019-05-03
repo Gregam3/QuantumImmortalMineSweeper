@@ -1,17 +1,14 @@
 import React, {Component} from 'react';
 import {BrowserRouter as Router, Route, Link} from "react-router-dom";
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faTrophy, faFrown, faChevronCircleRight, faRedo, faPlayCircle,
+import {faTrophy, faFrown, faChevronCircleRight, faRedo, faPlayCircle,
 	faQuestionCircle, faAtom, faCheck, faTimes, faSearch, faVolumeUp,
 	faVolumeMute, faBomb, faRunning, faWalking} from '@fortawesome/free-solid-svg-icons';
-
-
 import './App.css';
 import {Instructions} from "./Instructions";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {MineSweeper} from "./game/MineSweeper";
 import Sound from "react-sound";
-import logo from "./logo.svg";
 
 
 //FA icons
@@ -54,12 +51,12 @@ class App extends Component {
 					     <div style={{fontFamily: 'BaraliktoRegular', fontSize: this.state.titleFont + 'px', marginBottom: '20px', color: '#59d6ff'}}>QUANTUM <br/> MINESWEEPER</div>
 					<Router>
 						{this.state.titleFont > 40 ? "" : <div>
-							<Link to="/play" ><button><FontAwesomeIcon icon="play-circle"/> Play</button></Link>
+							<Link to="/" ><button><FontAwesomeIcon icon="play-circle"/> Play</button></Link>
 							<Link to="/instructions" ><button><FontAwesomeIcon icon="question-circle"/> Instructions </button></Link>
 							<br/>
 							<div style={{cursor:'pointer'}} onClick={() => this.setState({play: !this.state.play})}> Music &nbsp; <FontAwesomeIcon icon={this.state.play ?  "volume-up" : "volume-mute"}/> </div>
 							<div style={{cursor:'pointer'}} onClick={() => this.toggleFastMode()}>  &nbsp;  &nbsp; Fast Mode &nbsp; <FontAwesomeIcon icon={this.state.fastMode ?  "walking" : "running"}/> </div>
-							<Route exact path="/play" component={MineSweeper}/>
+							<Route exact path="/" component={MineSweeper}/>
 							<Route path="/instructions" component={Instructions}/>
 						</div>}
 					</Router>
@@ -82,7 +79,7 @@ class App extends Component {
 			this.setState({titleFont: this.state.titleFont - 1})
 		}
 
-		await sleep(1000)
+		await sleep(1000);
 		this.setState({titleFont: this.state.titleFont - 1, play: true})
 	}
 }
