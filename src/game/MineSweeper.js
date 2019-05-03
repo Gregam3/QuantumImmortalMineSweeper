@@ -59,7 +59,7 @@ export class MineSweeper extends Component {
 
 		this.state = {
 			rows: generateMines(levels[0][0], levels[0][1], levels[0][2]),
-			solvabilityButton: this.buttonStates.calculating
+			solvabilityButton: this.buttonStates.passive
 		};
 	}
 

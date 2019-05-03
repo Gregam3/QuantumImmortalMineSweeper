@@ -29,8 +29,9 @@ class App extends Component {
 	constructor(props) {
 		super(props);
 
-		this.state = {play: false, titleFont: 200};
-		this.performIntro()
+		this.state = {play: false, titleFont: 200, showRouting: false};
+		this.performIntro();
+		this.showOptionsAfterLoaded();
 	}
 
 	render() {
@@ -51,8 +52,8 @@ class App extends Component {
 					     <div style={{fontFamily: 'BaraliktoRegular', fontSize: this.state.titleFont + 'px', marginBottom: '20px', color: '#59d6ff'}}>QUANTUM <br/> MINESWEEPER</div>
 					<Router>
 						{this.state.titleFont > 40 ? "" : <div>
-							<Link to="/" ><button><FontAwesomeIcon icon="play-circle"/> Play</button></Link>
-							<Link to="/instructions" ><button><FontAwesomeIcon icon="question-circle"/> Instructions </button></Link>
+							{this.state.showRouting ? <Link to="/" ><button><FontAwesomeIcon icon="play-circle"/> Play</button></Link> : ""}
+							{this.state.showRouting ? <Link to="/instructions" onClick={() => this.setState({play: false})}><button><FontAwesomeIcon icon="question-circle"/> Instructions </button></Link> : ""}
 							<br/>
 							<div style={{cursor:'pointer'}} onClick={() => this.setState({play: !this.state.play})}> Music &nbsp; <FontAwesomeIcon icon={this.state.play ?  "volume-up" : "volume-mute"}/> </div>
 							<div style={{cursor:'pointer'}} onClick={() => this.toggleFastMode()}>  &nbsp;  &nbsp; Fast Mode &nbsp; <FontAwesomeIcon icon={this.state.fastMode ?  "walking" : "running"}/> </div>
@@ -73,6 +74,11 @@ class App extends Component {
 		console.debug(fastMode)
 	}
 
+	showOptionsAfterLoaded = async () => {
+		await sleep(5500);
+		this.setState({showRouting: true, play:true});
+	};
+
 	performIntro = async () => {
 		while(this.state.titleFont > 41) {
 			await sleep(10);
@@ -80,7 +86,7 @@ class App extends Component {
 		}
 
 		await sleep(1000);
-		this.setState({titleFont: this.state.titleFont - 1, play: true})
+		this.setState({titleFont: this.state.titleFont - 1})
 	}
 }
 
